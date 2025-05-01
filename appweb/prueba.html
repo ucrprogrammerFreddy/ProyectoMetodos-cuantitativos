@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulación de Barcazas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    h1, h2 {
+      color: #06444d;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+      background-color: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    button {
+      padding: 6px 12px;
+      margin-top: 5px;
+      background-color: #06444d;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #046377;
+    }
+    td[contenteditable="true"]:focus {
+      background-color: #ffffcc;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Simulación de Llegadas y Descargas de Barcazas</h1>
+
+<section>
+  <h2>Rango para Números Aleatorios</h2>
+  <label for="rangoMin">Mín:</label>
+  <input type="number" id="rangoMin" value="1">
+  <label for="rangoMax">Máx:</label>
+  <input type="number" id="rangoMax" value="100">
+  <label for="dias">Cantidad de días:</label>
+  <input type="number" id="dias" value="15">
+  <button onclick="generarSimulacion()">Generar Simulación</button>
+</section>
+
+<section>
+  <h2>Tabla de Simulación</h2>
+  <table id="tablaSimulacion">
+    <thead>
+      <tr>
+        <th>Día</th>
+        <th contenteditable="false">Retrasos del día anterior</th>
+        <th contenteditable="false">Número aleatorio llegadas</th>
+        <th contenteditable="false">Llegadas nocturnas</th>
+        <th>Total a descargar</th>
+        <th contenteditable="false">Número aleatorio descargas</th>
+        <th>Número de descargas</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+      <tr>
+        <td><strong>Totales</strong></td>
+        <td id="totalRetrasos"></td>
+        <td></td>
+        <td id="totalLlegadas"></td>
+        <td></td>
+        <td></td>
+        <td id="totalDescargas"></td>
+      </tr>
+    </tfoot>
+  </table>
+</section>
+
+<section>
+  <h2>Tabla 1. Tasa de Llegadas</h2>
+  <table id="tablaLlegadas">
+    <thead>
+      <tr>
+        <th># Llegadas</th>
+        <th>Probabilidad</th>
+        <th>Probabilidad Acumulada</th>
+        <th>Intervalo Aleatorio</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody contenteditable="true">
+      <tr><td>0</td><td>0.13</td><td>0.13</td><td>01 al 13</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+      <tr><td>1</td><td>0.17</td><td>0.3</td><td>14 al 30</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+      <tr><td>2</td><td>0.15</td><td>0.45</td><td>31 al 45</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+      <tr><td>3</td><td>0.25</td><td>0.7</td><td>46 al 70</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+      <tr><td>4</td><td>0.2</td><td>0.9</td><td>71 al 90</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+      <tr><td>5</td><td>0.1</td><td>1</td><td>91 al 00</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+    </tbody>
+  </table>
+  <button onclick="agregarFila('tablaLlegadas')">Agregar Fila</button>
+</section>
+
+<section>
+  <h2>Tabla 2. Tasa de Descargas</h2>
+  <table id="tablaDescargas">
+    <thead>
+      <tr>
+        <th># Descargas</th>
+        <th>Probabilidad</th>
+        <th>Probabilidad Acumulada</th>
+        <th>Intervalo Aleatorio</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody contenteditable="true">
+      <tr><td>1</td><td>0.05</td><td>0.05</td><td>01 al 05</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+      <tr><td>2</td><td>0.15</td><td>0.2</td><td>06 al 20</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+      <tr><td>3</td><td>0.5</td><td>0.7</td><td>21 al 70</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+      <tr><td>4</td><td>0.2</td><td>0.9</td><td>71 al 90</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+      <tr><td>5</td><td>0.1</td><td>1</td><td>91 al 00</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
+    </tbody>
+  </table>
+  <button onclick="agregarFila('tablaDescargas')">Agregar Fila</button>
+</section>
+
+<section>
+  <h2>Resultados Promedio</h2>
+  <p>Promedio de barcazas retrasadas por día: <span id="promedioRetrasos"></span></p>
+  <p>Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span></p>
+  <p>Promedio de barcazas descargadas por día: <span id="promedioDescargas"></span></p>
+</section>
+
+<script>
+function eliminarFila(btn) {
+  const fila = btn.parentNode.parentNode;
+  fila.remove();
+}
+
+function agregarFila(tablaId) {
+  const tabla = document.getElementById(tablaId).getElementsByTagName("tbody")[0];
+  const fila = tabla.insertRow();
+  for (let i = 0; i < 4; i++) {
+    const celda = fila.insertCell();
+    celda.contentEditable = true;
+    celda.innerText = "";
+  }
+  const celdaBoton = fila.insertCell();
+  const boton = document.createElement("button");
+  boton.innerText = "Eliminar";
+  boton.onclick = () => eliminarFila(boton);
+  celdaBoton.appendChild(boton);
+}
+
+function generarSimulacion() {
+  const min = parseInt(document.getElementById("rangoMin").value);
+  const max = parseInt(document.getElementById("rangoMax").value);
+  const dias = parseInt(document.getElementById("dias").value);
+  const tbody = document.getElementById("tablaSimulacion").querySelector("tbody");
+  tbody.innerHTML = "";
+
+  let retrasosAnterior = 0;
+  let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
+
+  for (let i = 1; i <= dias; i++) {
+    const rLlegada = Math.floor(Math.random() * (max - min + 1)) + min;
+    const rDescarga = Math.floor(Math.random() * (max - min + 1)) + min;
+    const llegadas = calcularLlegadas(rLlegada);
+    const totalADescargar = retrasosAnterior + llegadas;
+    const descargas = Math.min(totalADescargar, calcularDescargas(rDescarga));
+
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${i}</td>
+      <td contenteditable="true">${retrasosAnterior}</td>
+      <td contenteditable="true">${rLlegada}</td>
+      <td contenteditable="true">${llegadas}</td>
+      <td>${totalADescargar}</td>
+      <td contenteditable="true">${rDescarga}</td>
+      <td>${descargas}</td>
+    `;
+    tbody.appendChild(fila);
+
+    retrasosAnterior = totalADescargar - descargas;
+    totalRetrasos += retrasosAnterior;
+    totalLlegadas += llegadas;
+    totalDescargas += descargas;
+  }
+  actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, dias);
+  observarCambios();
+}
+
+function calcularLlegadas(valor) {
+  if (valor <= 13) return 0;
+  if (valor <= 30) return 1;
+  if (valor <= 45) return 2;
+  if (valor <= 70) return 3;
+  if (valor <= 90) return 4;
+  return 5;
+}
+
+function calcularDescargas(valor) {
+  if (valor <= 5) return 1;
+  if (valor <= 20) return 2;
+  if (valor <= 70) return 3;
+  if (valor <= 90) return 4;
+  return 5;
+}
+
+function actualizarTotales(retrasos, llegadas, descargas, dias) {
+  document.getElementById("totalRetrasos").textContent = retrasos;
+  document.getElementById("totalLlegadas").textContent = llegadas;
+  document.getElementById("totalDescargas").textContent = descargas;
+  document.getElementById("promedioRetrasos").textContent = (retrasos / dias).toFixed(2);
+  document.getElementById("promedioLlegadas").textContent = (llegadas / dias).toFixed(2);
+  document.getElementById("promedioDescargas").textContent = (descargas / dias).toFixed(2);
+}
+
+
+function observarCambios() {
+  const tbody = document.querySelector("#tablaSimulacion tbody");
+
+  tbody.querySelectorAll("td[contenteditable=true]").forEach(cell => {
+    cell.addEventListener("input", recalcular);
+    cell.addEventListener("blur", recalcular);
+    cell.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        this.blur(); // Forzar salida para disparar evento
+      }
+    });
+  });
+}
+
+
+
+function recalcular() {
+  const tbody = document.querySelector("#tablaSimulacion tbody");
+  let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
+
+  Array.from(tbody.rows).forEach(row => {
+    const prev = parseInt(row.cells[1].innerText) || 0;
+    const rLleg = parseInt(row.cells[2].innerText) || 0;
+    const lleg = parseInt(row.cells[3].innerText) || 0;
+    const rDesc = parseInt(row.cells[5].innerText) || 0;
+
+    const total = prev + lleg;
+    const descargas = total > 0 ? Math.min(total, calcularDescargas(rDesc)) : 0;
+
+    row.cells[4].textContent = total;
+    row.cells[6].textContent = descargas;
+
+    totalRetrasos += prev;
+    totalLlegadas += lleg;
+    totalDescargas += descargas;
+  });
+
+  actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, tbody.rows.length);
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>

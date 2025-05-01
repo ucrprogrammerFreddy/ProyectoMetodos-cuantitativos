@@ -1,0 +1,18 @@
+{
+  "results": [
+    {
+      "day": 1,
+      "previousDelays": 0,
+      "randomArrivalNumber": 23,
+      "nightlyArrivals": 3,
+      "totalToUnload": 10,
+      "randomUnloadNumber": 45,
+      "unloads": 5
+    }
+  ],
+  "averages": {
+    "averageDelays": 1.5,
+    "averageArrivals": 2.3,
+    "averageUnloads": 4.0
+  }
+}
