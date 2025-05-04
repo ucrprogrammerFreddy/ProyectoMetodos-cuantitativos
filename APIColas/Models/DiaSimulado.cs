@@ -1,4 +1,6 @@
-﻿namespace APIColas.Models
+﻿using System.Text.Json.Serialization;
+
+namespace APIColas.Models
 {
     public class DiaSimulado
     {
@@ -13,8 +15,10 @@
         public int Descargas { get; set; }
 
         // Relación con Simulacion
-        public int SimulacionId { get; set; }
-        public Simulacion Simulacion { get; set; }
+        public int SimulacionId { get; set; } //FK
+        
+        [JsonIgnore]
+        public Simulacion? Simulacion { get; set; } //Permite acceder a toda la simulación desde el día
 
 
     }

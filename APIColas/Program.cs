@@ -1,3 +1,4 @@
+using APIColas.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -6,8 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContext<ColasDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StringConexion")));
 
 var app = builder.Build();
 

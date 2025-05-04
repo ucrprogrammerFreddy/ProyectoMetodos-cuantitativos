@@ -1,4 +1,6 @@
-﻿namespace APIColas.Models
+﻿using System.Text.Json.Serialization;
+
+namespace APIColas.Models
 {
     public class PromediosSimulacion
     {
@@ -9,6 +11,8 @@
 
         // Relación con Simulacion
         public int SimulacionId { get; set; }
-        public Simulacion Simulacion { get; set; }
+
+        [JsonIgnore] //“Ignorá este campo cuando estés leyendo JSON del usuario.” *(para postman)
+        public Simulacion? Simulacion { get; set; }
     }
 }
