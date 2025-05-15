@@ -1,32 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Simulación de Barcazas</title>
   <style>
+    /* Estilos base para la página */
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
       background-color: #f4f4f4;
     }
-    h1, h2 {
+
+    h1,
+    h2 {
       color: #06444d;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 15px;
       background-color: white;
     }
-    th, td {
+
+    th,
+    td {
       border: 1px solid #ccc;
       padding: 8px;
       text-align: center;
     }
+
     th {
       background-color: #007bff;
       color: white;
     }
+
     button {
       padding: 6px 12px;
       margin-top: 5px;
@@ -35,152 +44,331 @@
       border: none;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #046377;
     }
+
     td[contenteditable="true"]:focus {
       background-color: #ffffcc;
     }
+
+    /* Estilos para responsividad */
+    @media (max-width: 600px) {
+      body {
+        margin: 10px;
+      }
+
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+      }
+
+      th {
+        position: sticky;
+        top: 0;
+        background-color: #007bff;
+        color: white;
+      }
+
+      td {
+        border: none;
+        border-bottom: 1px solid #ccc;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+      }
+
+      td:before {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+      }
+
+      td:nth-of-type(1):before {
+        content: "Día";
+      }
+
+      td:nth-of-type(2):before {
+        content: "Retrasos del día anterior";
+      }
+
+      td:nth-of-type(3):before {
+        content: "Número aleatorio llegadas";
+      }
+
+      td:nth-of-type(4):before {
+        content: "Llegadas nocturnas";
+      }
+
+      td:nth-of-type(5):before {
+        content: "Total a descargar";
+      }
+
+      td:nth-of-type(6):before {
+        content: "Número aleatorio descargas";
+      }
+
+      td:nth-of-type(7):before {
+        content: "Número de descargas";
+      }
+    }
   </style>
 </head>
+
 <body>
 
-<h1>Simulación de Llegadas y Descargas de Barcazas</h1>
+  <h1>Simulación de Llegadas y Descargas de Barcazas</h1>
 
-<section>
-  <h2>Rango para Números Aleatorios</h2>
-  <label for="rangoMin">Mín:</label>
-  <input type="number" id="rangoMin" value="1">
-  <label for="rangoMax">Máx:</label>
-  <input type="number" id="rangoMax" value="100">
-  <label for="dias">Cantidad de días:</label>
-  <input type="number" id="dias" value="15">
-  <button onclick="generarSimulacion()">Generar Simulación</button>
-</section>
+  <section>
+    <h2>Rango para Números Aleatorios</h2>
+    <label for="rangoMin">Mín:</label>
+    <input type="number" id="rangoMin" value="1" min="1" max="100" />
+    <label for="rangoMax">Máx:</label>
+    <input type="number" id="rangoMax" value="100" min="1" max="100" />
+    <label for="dias">Cantidad de días:</label>
+    <input type="number" id="dias" value="15" min="1" max="365" />
+    <button id="btnGenerar">Generar Simulación</button>
+  </section>
 
-<section>
-  <h2>Tabla de Simulación</h2>
-  <table id="tablaSimulacion">
-    <thead>
-      <tr>
-        <th>Día</th>
-        <th contenteditable="false">Retrasos del día anterior</th>
-        <th contenteditable="false">Número aleatorio llegadas</th>
-        <th contenteditable="false">Llegadas nocturnas</th>
-        <th>Total a descargar</th>
-        <th contenteditable="false">Número aleatorio descargas</th>
-        <th>Número de descargas</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-    <tfoot>
-      <tr>
-        <td><strong>Totales</strong></td>
-        <td id="totalRetrasos"></td>
-        <td></td>
-        <td id="totalLlegadas"></td>
-        <td></td>
-        <td></td>
-        <td id="totalDescargas"></td>
-      </tr>
-    </tfoot>
-  </table>
-</section>
+  <section>
+    <h2>Tabla de Simulación</h2>
+    <table id="tablaSimulacion">
+      <thead>
+        <tr>
+          <th>Día</th>
+          <th>Retrasos del día anterior</th>
+          <th>Número aleatorio llegadas</th>
+          <th>Llegadas nocturnas</th>
+          <th>Total a descargar</th>
+          <th>Número aleatorio descargas</th>
+          <th>Número de descargas</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td><strong>Totales</strong></td>
+          <td id="totalRetrasos"></td>
+          <td></td>
+          <td id="totalLlegadas"></td>
+          <td></td>
+          <td></td>
+          <td id="totalDescargas"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
 
-<section>
-  <h2>Tabla 1. Tasa de Llegadas</h2>
-  <table id="tablaLlegadas">
-    <thead>
-      <tr>
-        <th># Llegadas</th>
-        <th>Probabilidad</th>
-        <th>Probabilidad Acumulada</th>
-        <th>Intervalo Aleatorio</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody contenteditable="true">
-      <tr><td>0</td><td>0.13</td><td>0.13</td><td>01 al 13</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-      <tr><td>1</td><td>0.17</td><td>0.3</td><td>14 al 30</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-      <tr><td>2</td><td>0.15</td><td>0.45</td><td>31 al 45</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-      <tr><td>3</td><td>0.25</td><td>0.7</td><td>46 al 70</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-      <tr><td>4</td><td>0.2</td><td>0.9</td><td>71 al 90</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-      <tr><td>5</td><td>0.1</td><td>1</td><td>91 al 00</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-    </tbody>
-  </table>
-  <button onclick="agregarFila('tablaLlegadas')">Agregar Fila</button>
-</section>
+  <section>
+    <h2>Tabla 1. Tasa de Llegadas</h2>
+    <table id="tablaLlegadas">
+      <thead>
+        <tr>
+          <th># Llegadas</th>
+          <th>Probabilidad</th>
+          <th>Probabilidad Acumulada</th>
+          <th>Intervalo Aleatorio</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody contenteditable="true"></tbody>
+    </table>
+    <button id="btnAgregarLlegadas">Agregar Fila</button>
+  </section>
 
-<section>
-  <h2>Tabla 2. Tasa de Descargas</h2>
-  <table id="tablaDescargas">
-    <thead>
-      <tr>
-        <th># Descargas</th>
-        <th>Probabilidad</th>
-        <th>Probabilidad Acumulada</th>
-        <th>Intervalo Aleatorio</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody contenteditable="true">
-      <tr><td>1</td><td>0.05</td><td>0.05</td><td>01 al 05</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-      <tr><td>2</td><td>0.15</td><td>0.2</td><td>06 al 20</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-      <tr><td>3</td><td>0.5</td><td>0.7</td><td>21 al 70</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-      <tr><td>4</td><td>0.2</td><td>0.9</td><td>71 al 90</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-      <tr><td>5</td><td>0.1</td><td>1</td><td>91 al 00</td><td><button onclick="eliminarFila(this)">Eliminar</button></td></tr>
-    </tbody>
-  </table>
-  <button onclick="agregarFila('tablaDescargas')">Agregar Fila</button>
-</section>
+  <section>
+    <h2>Tabla 2. Tasa de Descargas</h2>
+    <table id="tablaDescargas">
+      <thead>
+        <tr>
+          <th># Descargas</th>
+          <th>Probabilidad</th>
+          <th>Probabilidad Acumulada</th>
+          <th>Intervalo Aleatorio</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody contenteditable="true"></tbody>
+    </table>
+    <button id="btnAgregarDescargas">Agregar Fila</button>
+  </section>
 
-<section>
-  <h2>Resultados Promedio</h2>
-  <p>Promedio de barcazas retrasadas por día: <span id="promedioRetrasos"></span></p>
-  <p>Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span></p>
-  <p>Promedio de barcazas descargadas por día: <span id="promedioDescargas"></span></p>
-</section>
+  <section>
+    <h2>Resultados Promedio</h2>
+    <p>Promedio de barcazas retrasadas por día: <span id="promedioRetrasos"></span></p>
+    <p>Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span></p>
+    <p>Promedio de barcazas descargadas por día: <span id="promedioDescargas"></span></p>
+  </section>
 
-<script>
-function eliminarFila(btn) {
-  const fila = btn.parentNode.parentNode;
-  fila.remove();
-}
+  <div style="text-align:center; margin-top: 20px;">
+    <button id="btnVerResultados"
+      style="background-color:#06444d; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">
+      Ver Resultados
+    </button>
+  </div>
 
-function agregarFila(tablaId) {
-  const tabla = document.getElementById(tablaId).getElementsByTagName("tbody")[0];
-  const fila = tabla.insertRow();
-  for (let i = 0; i < 4; i++) {
-    const celda = fila.insertCell();
-    celda.contentEditable = true;
-    celda.innerText = "";
-  }
-  const celdaBoton = fila.insertCell();
-  const boton = document.createElement("button");
-  boton.innerText = "Eliminar";
-  boton.onclick = () => eliminarFila(boton);
-  celdaBoton.appendChild(boton);
-}
+    <script>
+    document.getElementById('btnVerResultados').addEventListener('click', () => {
+      window.open('resultados.html', '_blank');
+    });
 
-function generarSimulacion() {
-  const min = parseInt(document.getElementById("rangoMin").value);
-  const max = parseInt(document.getElementById("rangoMax").value);
-  const dias = parseInt(document.getElementById("dias").value);
-  const tbody = document.getElementById("tablaSimulacion").querySelector("tbody");
-  tbody.innerHTML = "";
+    /* Variables globales para las tablas de probabilidades de llegadas y descargas */
+    let tablaLlegadasData = [
+      { llegadas: 0, probabilidad: 0.13 },
+      { llegadas: 1, probabilidad: 0.17 },
+      { llegadas: 2, probabilidad: 0.15 },
+      { llegadas: 3, probabilidad: 0.25 },
+      { llegadas: 4, probabilidad: 0.20 },
+      { llegadas: 5, probabilidad: 0.10 },
+    ];
 
-  let retrasosAnterior = 0;
-  let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
+    let tablaDescargasData = [
+      { descargas: 1, probabilidad: 0.05 },
+      { descargas: 2, probabilidad: 0.15 },
+      { descargas: 3, probabilidad: 0.50 },
+      { descargas: 4, probabilidad: 0.20 },
+      { descargas: 5, probabilidad: 0.10 },
+    ];
 
-  for (let i = 1; i <= dias; i++) {
-    const rLlegada = Math.floor(Math.random() * (max - min + 1)) + min;
-    const rDescarga = Math.floor(Math.random() * (max - min + 1)) + min;
-    const llegadas = calcularLlegadas(rLlegada);
-    const totalADescargar = retrasosAnterior + llegadas;
-    const descargas = Math.min(totalADescargar, calcularDescargas(rDescarga));
+    /* Calcula las probabilidades acumuladas y los intervalos aleatorios para la tabla dada */
+    function calcularAcumuladosYIntervalos(tabla, tipo) {
+      let acumulado = 0;
+      tabla.forEach((item, index) => {
+        acumulado += item.probabilidad;
+        item.acumulado = parseFloat(acumulado.toFixed(2));
+        const inferior = index === 0 ? 1 : Math.floor(tabla[index - 1].acumulado * 100) + 1;
+        const superior = Math.floor(item.acumulado * 100);
+        item.intervalo = `${inferior.toString().padStart(2, '0')} al ${superior.toString().padStart(2, '0')}`;
+      });
+    }
 
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
+    /* Renderiza la tabla editable de probabilidades en el DOM */
+    function renderizarTablaProbabilidades(tabla, tablaId, tipo) {
+      const tbody = document.getElementById(tablaId).querySelector('tbody');
+      tbody.innerHTML = '';
+      tabla.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+      <td contenteditable="true">${tipo === 'llegadas' ? item.llegadas : item.descargas}</td>
+      <td contenteditable="true">${item.probabilidad}</td>
+      <td>${item.acumulado.toFixed(2)}</td>
+      <td>${item.intervalo}</td>
+      <td><button class="btnEliminar" data-index="${index}" data-tipo="${tipo}">Eliminar</button></td>
+    `;
+        tbody.appendChild(tr);
+      });
+      agregarEventosEliminar();
+      agregarEventosEdicion(tabla, tablaId, tipo);
+    }
+
+    /* Agrega eventos a los botones eliminar para eliminar filas de la tabla */
+    function agregarEventosEliminar() {
+      document.querySelectorAll('.btnEliminar').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const index = parseInt(btn.getAttribute('data-index'));
+          const tipo = btn.getAttribute('data-tipo');
+          if (tipo === 'llegadas') {
+            tablaLlegadasData.splice(index, 1);
+            calcularAcumuladosYIntervalos(tablaLlegadasData, 'llegadas');
+            renderizarTablaProbabilidades(tablaLlegadasData, 'tablaLlegadas', 'llegadas');
+          } else {
+            tablaDescargasData.splice(index, 1);
+            calcularAcumuladosYIntervalos(tablaDescargasData, 'descargas');
+            renderizarTablaProbabilidades(tablaDescargasData, 'tablaDescargas', 'descargas');
+          }
+        });
+      });
+    }
+
+    /* Agrega eventos a las celdas editables para recalcular probabilidades al modificar */
+    function agregarEventosEdicion(tabla, tablaId, tipo) {
+      const tbody = document.getElementById(tablaId).querySelector('tbody');
+      tbody.querySelectorAll('td[contenteditable="true"]').forEach((cell, idx) => {
+        cell.addEventListener('input', () => {
+          const fila = cell.parentElement;
+          const llegadasDescargas = fila.children[0].textContent.trim();
+          const probabilidad = parseFloat(fila.children[1].textContent.trim());
+          if (tipo === 'llegadas') {
+            tabla[idx].llegadas = llegadasDescargas === '' ? 0 : parseInt(llegadasDescargas);
+            tabla[idx].probabilidad = isNaN(probabilidad) ? 0 : probabilidad;
+          } else {
+            tabla[idx].descargas = llegadasDescargas === '' ? 0 : parseInt(llegadasDescargas);
+            tabla[idx].probabilidad = isNaN(probabilidad) ? 0 : probabilidad;
+          }
+          const sumaProb = tabla.reduce((acc, cur) => acc + cur.probabilidad, 0);
+          if (sumaProb > 1) {
+            alert('La suma de probabilidades no puede ser mayor a 1.');
+            renderizarTablaProbabilidades(tabla, tablaId, tipo);
+            return;
+          }
+          calcularAcumuladosYIntervalos(tabla, tipo);
+          renderizarTablaProbabilidades(tabla, tablaId, tipo);
+        });
+      });
+    }
+
+    /* Agrega una nueva fila a la tabla editable */
+    function agregarFila(tablaId, tipo) {
+      if (tipo === 'llegadas') {
+        tablaLlegadasData.push({ llegadas: 0, probabilidad: 0 });
+        calcularAcumuladosYIntervalos(tablaLlegadasData, 'llegadas');
+        renderizarTablaProbabilidades(tablaLlegadasData, 'tablaLlegadas', 'llegadas');
+      } else {
+        tablaDescargasData.push({ descargas: 0, probabilidad: 0 });
+        calcularAcumuladosYIntervalos(tablaDescargasData, 'descargas');
+        renderizarTablaProbabilidades(tablaDescargasData, 'tablaDescargas', 'descargas');
+      }
+    }
+
+    /* Busca el valor correspondiente en la tabla de probabilidades según el número aleatorio */
+    function buscarValorAleatorio(random, tabla, tipo) {
+      for (const item of tabla) {
+        const inferior = parseInt(item.intervalo.split(' al ')[0]);
+        const superior = parseInt(item.intervalo.split(' al ')[1]);
+        if (random >= inferior && random <= superior) {
+          return tipo === 'llegadas' ? item.llegadas : item.descargas;
+        }
+      }
+      return 0;
+    }
+
+    /* Genera la simulación con los parámetros ingresados */
+    function generarSimulacion() {
+      const min = parseInt(document.getElementById('rangoMin').value);
+      const max = parseInt(document.getElementById('rangoMax').value);
+      const dias = parseInt(document.getElementById('dias').value);
+
+      if (isNaN(min) || isNaN(max) || isNaN(dias) || min < 1 || max > 100 || min > max || dias < 1) {
+        alert('Por favor, ingrese valores válidos para los rangos y cantidad de días.');
+        return;
+      }
+
+      const tbody = document.querySelector('#tablaSimulacion tbody');
+      tbody.innerHTML = '';
+
+      let retrasosAnterior = 0;
+      let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
+
+      const resultadosDiarios = [];
+
+      for (let i = 1; i <= dias; i++) {
+        const rLlegada = Math.floor(Math.random() * (max - min + 1)) + min;
+        const rDescarga = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        const llegadas = buscarValorAleatorio(rLlegada, tablaLlegadasData, 'llegadas');
+        const totalADescargar = retrasosAnterior + llegadas;
+        const descargas = Math.min(totalADescargar, buscarValorAleatorio(rDescarga, tablaDescargasData, 'descargas'));
+
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
       <td>${i}</td>
       <td contenteditable="true">${retrasosAnterior}</td>
       <td contenteditable="true">${rLlegada}</td>
@@ -189,90 +377,140 @@ function generarSimulacion() {
       <td contenteditable="true">${rDescarga}</td>
       <td>${descargas}</td>
     `;
-    tbody.appendChild(fila);
+        tbody.appendChild(fila);
 
-    retrasosAnterior = totalADescargar - descargas;
-    totalRetrasos += retrasosAnterior;
-    totalLlegadas += llegadas;
-    totalDescargas += descargas;
-  }
-  actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, dias);
-  observarCambios();
-}
+        resultadosDiarios.push({
+          dia: i,
+          retrasosDiaAnterior: retrasosAnterior,
+          numeroAleatorioLlegadas: rLlegada,
+          llegadasNocturnas: llegadas,
+          totalADescargar: totalADescargar,
+          numeroAleatorioDescargas: rDescarga,
+          descargas: descargas,
+        });
 
-function calcularLlegadas(valor) {
-  if (valor <= 13) return 0;
-  if (valor <= 30) return 1;
-  if (valor <= 45) return 2;
-  if (valor <= 70) return 3;
-  if (valor <= 90) return 4;
-  return 5;
-}
-
-function calcularDescargas(valor) {
-  if (valor <= 5) return 1;
-  if (valor <= 20) return 2;
-  if (valor <= 70) return 3;
-  if (valor <= 90) return 4;
-  return 5;
-}
-
-function actualizarTotales(retrasos, llegadas, descargas, dias) {
-  document.getElementById("totalRetrasos").textContent = retrasos;
-  document.getElementById("totalLlegadas").textContent = llegadas;
-  document.getElementById("totalDescargas").textContent = descargas;
-  document.getElementById("promedioRetrasos").textContent = (retrasos / dias).toFixed(2);
-  document.getElementById("promedioLlegadas").textContent = (llegadas / dias).toFixed(2);
-  document.getElementById("promedioDescargas").textContent = (descargas / dias).toFixed(2);
-}
-
-
-function observarCambios() {
-  const tbody = document.querySelector("#tablaSimulacion tbody");
-
-  tbody.querySelectorAll("td[contenteditable=true]").forEach(cell => {
-    cell.addEventListener("input", recalcular);
-    cell.addEventListener("blur", recalcular);
-    cell.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        this.blur(); // Forzar salida para disparar evento
+        retrasosAnterior = totalADescargar - descargas;
+        totalRetrasos += retrasosAnterior;
+        totalLlegadas += llegadas;
+        totalDescargas += descargas;
       }
-    });
-  });
-}
 
+      actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, dias);
 
+      // Guardar resultados y promedios en localStorage para resultados.html
+      const promedios = {
+        promedioRetrasos: (totalRetrasos / dias).toFixed(2),
+        promedioLlegadas: (totalLlegadas / dias).toFixed(2),
+        promedioDescargas: (totalDescargas / dias).toFixed(2),
+      };
+      localStorage.setItem('resultadosSimulacion', JSON.stringify(resultadosDiarios));
+      localStorage.setItem('promediosSimulacion', JSON.stringify(promedios));
 
-function recalcular() {
-  const tbody = document.querySelector("#tablaSimulacion tbody");
-  let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
+      observarCambios();
+    }
 
-  Array.from(tbody.rows).forEach(row => {
-    const prev = parseInt(row.cells[1].innerText) || 0;
-    const rLleg = parseInt(row.cells[2].innerText) || 0;
-    const lleg = parseInt(row.cells[3].innerText) || 0;
-    const rDesc = parseInt(row.cells[5].innerText) || 0;
+    /* Actualiza los totales y promedios en la tabla de simulación */
+    function actualizarTotales(retrasos, llegadas, descargas, dias) {
+      document.getElementById('totalRetrasos').textContent = retrasos;
+      document.getElementById('totalLlegadas').textContent = llegadas;
+      document.getElementById('totalDescargas').textContent = descargas;
+      document.getElementById('promedioRetrasos').textContent = (retrasos / dias).toFixed(2);
+      document.getElementById('promedioLlegadas').textContent = (llegadas / dias).toFixed(2);
+      document.getElementById('promedioDescargas').textContent = (descargas / dias).toFixed(2);
+    }
 
-    const total = prev + lleg;
-    const descargas = total > 0 ? Math.min(total, calcularDescargas(rDesc)) : 0;
+    /* Observa cambios en las celdas editables para recalcular automáticamente */
+    function observarCambios() {
+      const tbody = document.querySelector('#tablaSimulacion tbody');
+      tbody.querySelectorAll('td[contenteditable="true"]').forEach(cell => {
+        cell.addEventListener('input', recalcular);
+        cell.addEventListener('blur', recalcular);
+        cell.addEventListener('keydown', e => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            cell.blur();
+          }
+        });
+      });
+    }
 
-    row.cells[4].textContent = total;
-    row.cells[6].textContent = descargas;
+    /* Recalcula los valores de la simulación cuando se editan las celdas */
+    function recalcular() {
+      const tbody = document.querySelector('#tablaSimulacion tbody');
+      let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
 
-    totalRetrasos += prev;
-    totalLlegadas += lleg;
-    totalDescargas += descargas;
-  });
+      Array.from(tbody.rows).forEach(row => {
+        const prev = parseInt(row.cells[1].innerText) || 0;
+        const rLleg = parseInt(row.cells[2].innerText) || 0;
+        const lleg = parseInt(row.cells[3].innerText) || 0;
+        const rDesc = parseInt(row.cells[5].innerText) || 0;
 
-  actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, tbody.rows.length);
-}
+        const total = prev + lleg;
+        const descargas = total > 0 ? Math.min(total, buscarValorAleatorio(rDesc, tablaDescargasData, 'descargas')) : 0;
 
+        row.cells[4].textContent = total;
+        row.cells[6].textContent = descargas;
 
+        totalRetrasos += prev;
+        totalLlegadas += lleg;
+        totalDescargas += descargas;
+      });
 
+      actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, tbody.rows.length);
 
+      guardarDatosLocalStorage();
+    }
 
-</script>
+    /* Guarda los datos actuales de la simulación en localStorage */
+    function guardarDatosLocalStorage() {
+      const tbody = document.querySelector('#tablaSimulacion tbody');
+      const resultadosDiarios = [];
+
+      Array.from(tbody.rows).forEach(row => {
+        resultadosDiarios.push({
+          dia: parseInt(row.cells[0].textContent),
+          retrasosDiaAnterior: parseInt(row.cells[1].textContent),
+          numeroAleatorioLlegadas: parseInt(row.cells[2].textContent),
+          llegadasNocturnas: parseInt(row.cells[3].textContent),
+          totalADescargar: parseInt(row.cells[4].textContent),
+          numeroAleatorioDescargas: parseInt(row.cells[5].textContent),
+          descargas: parseInt(row.cells[6].textContent),
+        });
+      });
+
+      const dias = resultadosDiarios.length;
+      let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
+      resultadosDiarios.forEach(d => {
+        totalRetrasos += d.retrasosDiaAnterior;
+        totalLlegadas += d.llegadasNocturnas;
+        totalDescargas += d.descargas;
+      });
+
+      const promedios = {
+        promedioRetrasos: (totalRetrasos / dias).toFixed(2),
+        promedioLlegadas: (totalLlegadas / dias).toFixed(2),
+        promedioDescargas: (totalDescargas / dias).toFixed(2),
+      };
+
+      localStorage.setItem('resultadosSimulacion', JSON.stringify(resultadosDiarios));
+      localStorage.setItem('promediosSimulacion', JSON.stringify(promedios));
+    }
+
+    /* Eventos para botones agregar filas */
+    document.getElementById('btnAgregarLlegadas').addEventListener('click', () => agregarFila('tablaLlegadas', 'llegadas'));
+    document.getElementById('btnAgregarDescargas').addEventListener('click', () => agregarFila('tablaDescargas', 'descargas'));
+
+    /* Evento para botón generar simulación */
+    document.getElementById('btnGenerar').addEventListener('click', generarSimulacion);
+
+    /* Inicializa las tablas de probabilidades al cargar la página */
+    calcularAcumuladosYIntervalos(tablaLlegadasData, 'llegadas');
+    renderizarTablaProbabilidades(tablaLlegadasData, 'tablaLlegadas', 'llegadas');
+    calcularAcumuladosYIntervalos(tablaDescargasData, 'descargas');
+    renderizarTablaProbabilidades(tablaDescargasData, 'tablaDescargas', 'descargas');
+
+  </script>
 
 </body>
+
 </html>
