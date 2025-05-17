@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulación de Barcazas con Tablas y Gráficos</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* General Styling */
+    body {
+      background-color: #f8f9fa;
+    }
+
+    h1,
+    h3,
+    h4 {
+      text-align: center;
+    }
+
+    /* Scrollable Container for Tables */
+    .scrollable-container {
+      max-height: 400px;
+      /* Limit table height */
+      overflow-y: auto;
+      /* Enable vertical scrolling */
+      border: 1px solid #ddd;
+      /* Add a border */
+      border-radius: 0.5rem;
+      padding: 1rem;
+      background-color: white;
+      /* White background */
+    }
+
+    /* Styling Editable Cells */
+    td[contenteditable="true"] {
+      background-color: #f8f9fa;
+      outline: none;
+      cursor: text;
+    }
+
+    td[contenteditable="true"]:focus {
+      background-color: #e9ecef;
+      border: 1px solid #007bff;
+    }
+
+    /* Table Headers */
+    .table-title {
+      background-color: #007bff;
+      color: white;
+      text-align: center;
+    }
+
+    /* Formula Box Styling */
+    .formula-box {
+      background-color: #eff6ff;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #007bff;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container py-5">
+    <h1>Simulación de Barcazas</h1>
+
+    <!-- Simulation Form -->
+    <form id="simulationForm">
+      <div class="mb-3">
+        <label for="days" class="form-label">Número de días a simular:</label>
+        <input type="number" id="days" name="days" class="form-control" min="1" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Generar Datos</button>
+    </form>
+
+    <!-- Main Simulation Table -->
+    <div id="tablesContainer" class="mb-4" style="display: none;">
+      <h3>Modelo de Simulación de la Cola en el Puerto</h3>
+      <div class="scrollable-container">
+        <table class="table table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th>Día</th>
+              <th>Retrasos Previos</th>
+              <th>Número Aleatorio</th>
+              <th>Llegadas</th>
+              <th>Total a Descargar</th>
+              <th>Número Aleatorio (Descargas Posibles)</th>
+              <th>Descargas</th>
+              <th>Retrasos Nuevos</th>
+            </tr>
+          </thead>
+          <tbody id="simulationTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Probability Tables -->
+    <div>
+      <h3>Tablas de Probabilidades</h3>
+
+      <h4 class="mt-3">Llegadas</h4>
+      <div class="table-responsive mb-3">
+        <table class="table table-bordered">
+          <thead class="table-title">
+            <tr>
+              <th>Demanda</th>
+              <th>Probabilidad</th>
+              <th>Límite Inferior</th>
+              <th>Acumulado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0</td>
+              <td>0.13</td>
+              <td>0.00</td>
+              <td>0.13</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>0.17</td>
+              <td>0.13</td>
+              <td>0.30</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>0.15</td>
+              <td>0.30</td>
+              <td>0.45</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>0.25</td>
+              <td>0.45</td>
+              <td>0.70</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>0.20</td>
+              <td>0.70</td>
+              <td>0.90</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>0.10</td>
+              <td>0.90</td>
+              <td>1.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mt-3">Tasas de Descarga</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-title">
+            <tr>
+              <th>Número</th>
+              <th>Probabilidad</th>
+              <th>Límite Inferior</th>
+              <th>Acumulado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>0.05</td>
+              <td>0.00</td>
+              <td>0.05</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>0.15</td>
+              <td>0.05</td>
+              <td>0.20</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>0.50</td>
+              <td>0.20</td>
+              <td>0.70</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>0.20</td>
+              <td>0.70</td>
+              <td>0.90</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>0.10</td>
+              <td>0.90</td>
+              <td>1.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Formula Box -->
+    <div class="formula-box">
+      <h4>Fórmulas Clave</h4>
+      <p><strong>Llegadas:</strong> RAND(), VLOOKUP para buscar en la tabla de llegadas.</p>
+      <p><strong>Descargas:</strong> RAND(), VLOOKUP para buscar en la tabla de tasas de descarga.</p>
+    </div>
+
+    <!-- Main Script -->
+    <script>
+      const arrivals = [
+        { demand: 0, lower: 0.0, upper: 0.13 },
+        { demand: 1, lower: 0.13, upper: 0.30 },
+        { demand: 2, lower: 0.30, upper: 0.45 },
+        { demand: 3, lower: 0.45, upper: 0.70 },
+        { demand: 4, lower: 0.70, upper: 0.90 },
+        { demand: 5, lower: 0.90, upper: 1.0 },
+      ];
+
+      const unloadingRates = [
+        { unload: 1, lower: 0.0, upper: 0.05 },
+        { unload: 2, lower: 0.05, upper: 0.20 },
+        { unload: 3, lower: 0.20, upper: 0.70 },
+        { unload: 4, lower: 0.70, upper: 0.90 },
+        { unload: 5, lower: 0.90, upper: 1.0 },
+      ];
+
+      const lookupValue = (random, table) => table.find(item => random >= item.lower && random < item.upper);
+
+      document.getElementById("simulationForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const days = parseInt(document.getElementById("days").value);
+        const tableBody = document.getElementById("simulationTableBody");
+        tableBody.innerHTML = "";
+
+        let previousDelays = 0;
+        for (let day = 1; day <= days; day++) {
+          const randomArrival = Math.random().toFixed(4);
+          const randomUnload = Math.random().toFixed(4);
+
+          const arrivalData = lookupValue(randomArrival, arrivals);
+          const unloadData = lookupValue(randomUnload, unloadingRates);
+
+          const arrivalsValue = arrivalData ? arrivalData.demand : 0;
+          const possibleUnload = unloadData ? unloadData.unload : 0;
+
+          const totalToUnload = previousDelays + arrivalsValue;
+          const actualUnload = Math.min(totalToUnload, possibleUnload);
+          const newDelays = totalToUnload - actualUnload;
+
+          const row = `
+            <tr>
+              <td>${day}</td>
+              <td contenteditable="true" class="editable previous-delays">${previousDelays}</td>
+              <td>${randomArrival}</td>
+              <td contenteditable="true" class="editable arrivals">${arrivalsValue}</td>
+              <td>${totalToUnload}</td>
+              <td>${randomUnload}</td>
+              <td>${actualUnload}</td>
+              <td>${newDelays}</td>
+            </tr>`;
+          tableBody.insertAdjacentHTML("beforeend", row);
+
+          previousDelays = newDelays;
+        }
+
+        document.getElementById("tablesContainer").style.display = "block";
+        addEditableListeners();
+      });
+
+      const addEditableListeners = () => {
+        const tableBody = document.getElementById("simulationTableBody");
+        tableBody.addEventListener("input", (event) => {
+          const row = event.target.parentElement;
+
+          const previousDelays = parseInt(row.querySelector(".previous-delays").textContent) || 0;
+          const arrivals = parseInt(row.querySelector(".arrivals").textContent) || 0;
+
+          const totalToUnload = previousDelays + arrivals;
+          const randomUnload = parseFloat(row.children[5].textContent);
+
+          const unloadData = lookupValue(randomUnload, unloadingRates);
+          const possibleUnload = unloadData ? unloadData.unload : 0;
+
+          const actualUnload = Math.min(totalToUnload, possibleUnload);
+          const newDelays = totalToUnload - actualUnload;
+
+          row.children[4].textContent = totalToUnload;
+          row.children[6].textContent = actualUnload;
+          row.children[7].textContent = newDelays;
+        });
+      };
+    </script>
+  </div>
+</body>
+
+</html>
