@@ -3,8 +3,59 @@ function obtenerDatosSimulacion() {
   const resultados = localStorage.getItem('resultadosSimulacion');
   const promedios = localStorage.getItem('promediosSimulacion');
   if (!resultados || !promedios) {
-    alert('No se encontraron datos de simulación. Por favor, genere la simulación primero.');
+    mostrarModal('No se encontraron datos de simulación. Por favor, genere la simulación primero.');
     return null;
+  }
+  
+  // Función para mostrar un modal con mensaje
+  function mostrarModal(mensaje) {
+    // Crear overlay
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = 1000;
+
+    // Crear modal
+    const modal = document.createElement('div');
+    modal.style.backgroundColor = '#fff';
+    modal.style.padding = '20px';
+    modal.style.borderRadius = '8px';
+    modal.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+    modal.style.maxWidth = '400px';
+    modal.style.textAlign = 'center';
+
+    // Crear mensaje
+    const msg = document.createElement('p');
+    msg.textContent = mensaje;
+    msg.style.marginBottom = '20px';
+    msg.style.fontSize = '16px';
+    msg.style.color = '#333';
+
+    // Crear botón cerrar
+    const btnCerrar = document.createElement('button');
+    btnCerrar.textContent = 'Cerrar';
+    btnCerrar.style.padding = '8px 16px';
+    btnCerrar.style.backgroundColor = '#06444d';
+    btnCerrar.style.color = 'white';
+    btnCerrar.style.border = 'none';
+    btnCerrar.style.borderRadius = '4px';
+    btnCerrar.style.cursor = 'pointer';
+
+    btnCerrar.addEventListener('click', () => {
+      document.body.removeChild(overlay);
+    });
+
+    modal.appendChild(msg);
+    modal.appendChild(btnCerrar);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
   }
   return {
     resultados: JSON.parse(resultados),
