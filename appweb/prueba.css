@@ -1,40 +1,167 @@
-body {
+.fondo {
     font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #f4f4f4;
-  }
-  
-  h1, h2 {
+    background-image: url(img/fondoBarco2.jpg);
+    margin: 50px;
+    height: auto;
+    width: auto;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+h1,
+h2 {
     color: #06444d;
-  }
-  
-  table {
-    width: 100%;
+}
+
+table {
+    width: 50%;
     border-collapse: collapse;
     margin-bottom: 15px;
-    background-color: white;
-  }
-  
-  table, th, td {
-    border: 1px solid #ccc;
-  }
-  
-  th, td {
+    background-color: rgba(0, 0, 0, 0.523);
+}
+
+th,
+td {
+    border: 1px solid #0d0441;
     padding: 8px;
     text-align: center;
-  }
-  
-  button {
+}
+
+th {
+    background-color: #438fed;
+    color: white;
+}
+
+button {
     padding: 6px 12px;
     margin-top: 5px;
     background-color: #06444d;
     color: white;
-    border: none;
+    border-radius: 25px;
     cursor: pointer;
-  }
-  
-  button:hover {
+}
+
+button:hover {
     background-color: #046377;
-  }
-  
-  
+}
+
+td[contenteditable="true"]:focus {
+    background-color: #890000;
+}
+
+.table-title {
+    background-color: #002348;
+    color: rgb(0, 0, 0);
+    text-align: center;
+}
+
+.mark {
+    background-color: hsla(0, 0%, 92%, 0.366);
+    text-align: center;
+}
+
+.titulo {
+    text-align: center;
+    color: #f0f0f0;
+    background-color: rgba(0, 0, 0, 0.753);
+    font-family: 'Times New Roman', Times, serif;
+    border-radius: 0.5rem;
+    border: 1px solid #ffffff;
+    margin: 25px;
+}
+
+.estiloModal {
+    background-color: #06444d;
+    margin: 0px;
+    height: auto;
+    width: auto;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-style: oblique;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.titulo2 {
+    color: Black;
+    text-align: center;
+}
+
+.markModel {
+    color: rgb(255, 255, 255);
+}
+
+.bordeB {
+    padding: 6px 12px;
+    margin-top: 5px;
+    background-color: #000000c8;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.fondoTablas {
+    background-color: black;
+}
+
+.colorL {
+    color: white;
+    background-color: #00000090;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+
+.modal-content {
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: none;
+}
+
+.modal-header {
+    background-color: #06444d;
+    color: white;
+    border-bottom: 2px solid #046377;
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.modal-title {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.modal-body {
+    background-color: #0a5a6e;
+    color: white;
+    font-size: 1rem;
+    padding: 20px;
+    border-radius: 0 0 0.75rem 0.75rem;
+}
+
+.modal-footer {
+    background-color: #06444d;
+    border-top: 2px solid #046377;
+    border-radius: 0 0 0.75rem 0.75rem;
+}
+
+.modal-footer .btn {
+    background-color: #046377;
+    border: none;
+    border-radius: 25px;
+    padding: 6px 15px;
+    color: white;
+    font-weight: 600;
+}
+
+.modal-footer .btn:hover {
+    background-color: #06444d;
+}

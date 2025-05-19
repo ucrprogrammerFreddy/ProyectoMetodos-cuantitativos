@@ -1,61 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Resultados de la Simulación de Barcazas</title>
-  <link rel="stylesheet" href="resultados.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8" />
+    <title>Resultados de la Simulación de Barcazas</title>
+    <link rel="stylesheet" href="resultados.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-  <!-- Sección inicial de introducción -->
-  <div class="overlay intro">
-    <h1>Resultados de la Simulación de Barcazas</h1>
+    <!-- Sección inicial de introducción -->
+    <div class="overlay intro">
+        <h1>Resultados de la Simulación de Barcazas</h1>
 
-  <section id="costos" class="mb-4">
-      <h2 class="titulo-seccion">Costos Asociados</h2>
-      <p>Costo por barcaza retrasada por día: <span id="costoRetrasos"></span> USD</p>
-      <p>Costo total estimado: <span id="costoTotal"></span> USD</p>
-    </section>
+        <section id="costos" class="mb-4">
+            <h2 class="titulo-seccion">Costos Asociados</h2>
+            <p>Costo por barcaza retrasada por día: <span id="costoRetrasos"></span> USD</p>
+            <p>Costo total estimado: <span id="costoTotal"></span> USD</p>
+        </section>
 
-    <section id="resultadosPromedio" class="mb-4">
-      <h2 class="titulo-seccion">Resultados Promedio</h2>
-      <p>Promedio de barcazas retrasadas por día: <span id="promedioRetrasos"></span></p>
-      <p>Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span></p>
-      <p>Promedio de barcazas descargadas por día: <span id="promedioDescargas"></span></p>
-    </section>
+        <section id="resultadosPromedio" class="mb-4">
+            <h2 class="titulo-seccion">Resultados Promedio</h2>
+            <p>Promedio de barcazas retrasadas por día: <span id="promedioRetrasos"></span></p>
+            <p>Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span></p>
+            <p>Promedio de barcazas descargadas por día: <span id="promedioDescargas"></span></p>
+        </section>
 
-    <div class="text-center">
-      <a href="#graficos" class="btn btn-primary">Ver gráficos</a>
+        <div class="text-center">
+            <a href="#graficos" class="btn btn-primary">Ver gráficos</a>
+        </div>
     </div>
-  </div>
 
-  <!-- Sección de gráficos ocultos al inicio -->
-  <main id="graficos" class="graficos-section">
-    <section class="chart-container">
-      <h2>Promedios Diarios</h2>
-      <canvas id="promediosBarChart"></canvas>
-    </section>
+    <!-- Sección de gráficos ocultos al inicio -->
+    <main id="graficos" class="graficos-section">
+        <section class="chart-container">
+            <h2>Promedios Diarios</h2>
+            <canvas id="promediosBarChart"></canvas>
+        </section>
 
-    <section class="chart-container">
-      <h2>Distribución de Llegadas Nocturnas</h2>
-      <canvas id="llegadasPieChart"></canvas>
-    </section>
+        <section class="chart-container">
+            <h2>Distribución de Llegadas Nocturnas</h2>
+            <canvas id="llegadasPieChart"></canvas>
+        </section>
 
-    <section class="chart-container">
-      <h2>Retrasos Diarios</h2>
-      <canvas id="retrasosLineChart"></canvas>
-    </section>
+        <section class="chart-container">
+            <h2>Retrasos Diarios</h2>
+            <canvas id="retrasosLineChart"></canvas>
+        </section>
 
-    <section class="chart-container">
-      <h2>Descargas Diarias</h2>
-      <canvas id="descargasColumnChart"></canvas>
-    </section>
+        <section class="chart-container">
+            <h2>Descargas Diarias</h2>
+            <canvas id="descargasColumnChart"></canvas>
+        </section>
 
-    <div class="text-center">
-      <a href="prueba.html" class="btn btn-primary">Volver</a>
-    </div>
-  </main>
+        <div class="text-center">
+            <a href="prueba.html" class="btn btn-primary">Volver</a>
+        </div>
+    </main>
 
-  <script src="resultados.js"></script>
+    <script src="resultados.js"></script>
 </body>
+
 </html>

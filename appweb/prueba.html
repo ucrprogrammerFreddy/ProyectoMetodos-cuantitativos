@@ -1,496 +1,229 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <title>Llegadas y descargas de Barcazas</title>
-        <!-- Required meta tags -->
-        <meta charset="utf-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-        />
 
-        <!-- Bootstrap CSS v5.2.1 -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-            crossorigin="anonymous"
-            link href="style.css"
-            rel="stylesheet"
-        />
-        <style>
-        
-    .fondo {
-        font-family: Arial, sans-serif;
+<head>
+    <title>Llegadas y descargas de Barcazas</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-        
-        background-image: url(img/fondoBarco2.jpg);
-        margin: 50px;
-        height: auto;
-        width: auto;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link href="prueba.css" rel="stylesheet" />
+</head>
 
-    }
-    h1, h2 {
-      color: #06444d;
-    }
-    table {
-      width: 50%;
-      border-collapse: collapse;
-      margin-bottom: 15px;
-      background-color: rgba(0, 0, 0, 0.523);
-
-      
-    }
-    th, td {
-      border: 1px solid #0d0441;
-      padding: 8px;
-      text-align: center;
-      
-    }
-    th {
-      background-color: #438fed;
-      color: white;
-    }
-    button {
-      padding: 6px 12px;
-      margin-top: 5px;
-      background-color: #06444d;
-      color: white;
-      border-radius:25px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #046377;
-    }
-    td[contenteditable="true"]:focus {
-      background-color: #890000;
-    }
-    .table-title {
-      background-color: #002348;
-      color: rgb(0, 0, 0);
-      text-align: center;
-    }
-    .mark
-    {
-        background-color: hsla(0, 0%, 92%, 0.366);
-        text-align: center;
-    }
-    .titulo{
-        text-align: center;
-        color: #f0f0f0;
-        background-color: rgba(0, 0, 0, 0.753);
-      font-family: 'Times New Roman', Times, serif;
-      border-radius: 0.5rem;
-      border: 1px solid #ffffff;
-      margin: 25px;
-    }
-    .estiloModal{
-        background-color: #06444d;
-        margin: 0px;
-        height: auto;
-        width: auto;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        font-style: oblique;
-
-        
-    }
-    .titulo2{
-        color: Black;
-        text-align: center;
-
-    }
-    .markModel{
-
-        color:rgb(255, 255, 255) ;
-    }
-
-    .bordeB{
-        padding: 6px 12px;
-        margin-top: 5px;
-        background-color: #000000c8;
-        color: white;
-        border-radius:25px;
-        cursor: pointer;
-    }
-
-    .fondoTablas{
-        background-color: black;
-    }
-
-    .colorL{
-        color: white;
-        background-color: #00000090;
-    }
-
-    .button-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 10px; 
-    }
-  </style>
-    </head>
-
-    <body class="fondo">
+<body class="fondo">
+    <div class="button-container">
+        <h1 class="titulo">Simulación de llegadas y descargas de Barcazas</h1>
+    </div>
+    <section>
         <div class="button-container">
-            <h1 class="titulo">Simulación de llegadas y descargas de Barcazas</h1>
+            <h2 class="titulo ">Rango para números aleatorios</h2>
         </div>
-            <section>
-                <div class="button-container">
-                    <h2 class="titulo ">Rango para números aleatorios</h2>
-                </div>  
-                <div class="colorL">
-                <label for="rangoMin">Mín:</label>
-                <input type="number" id="rangoMin" value="1">
-                <label for="rangoMax">Máx:</label>
-                <input type="number" id="rangoMax" value="100">
-                <label for="dias">Cantidad de días:</label>
-                <input type="number" id="dias" value="15">
+        <div class="colorL">
+            <label for="rangoMin">Mín:</label>
+            <input type="number" id="rangoMin" value="1">
+            <label for="rangoMax">Máx:</label>
+            <input type="number" id="rangoMax" value="100">
+            <label for="dias">Cantidad de días:</label>
+            <input type="number" id="dias" value="15">
             <button id="btnGenerar">Generar simulación</button>
-            <button id="btnVerResultados" style="background-color:#06444d; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">Ver Resultados</button>
-                </div>
+        </div>
 
-            </section>
+    </section>
 
-            <section>
-                <h2 class="titulo">Tabla de simulación</h2>
-                <table id="tablaSimulacion" class="table mx-auto">
-                    <thead class="">
-                        <tr>
-                            <th>Día</th>
-                            <th contenteditable="false">Retrasos del día anterior</th>
-                            <th contenteditable="false">Número aleatorio llegadas</th>
-                            <th contenteditable="false">Llegadas nocturnas</th>
-                            <th>Total a descargar</th>
-                            <th contenteditable="false">Número aleatorio descargas</th>
-                            <th>Número de descargas</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot class="fondoTablas">
-                        <tr>
-                            <td><strong>Totales</strong></td>
-                            <td id="totalRetrasos"></td>
-                            <td></td>
-                            <td id="totalLlegadas"></td>
-                            <td></td>
-                            <td></td>
-                            <td id="totalDescargas"></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </section>
+    <section>
+        <h2 class="titulo">Tabla de simulación</h2>
+        <table id="tablaSimulacion" class="table mx-auto">
+            <thead class="">
+                <tr>
+                    <th>Día</th>
+                    <th contenteditable="false">Retrasos del día anterior</th>
+                    <th contenteditable="false">Número aleatorio llegadas</th>
+                    <th contenteditable="false">Llegadas nocturnas</th>
+                    <th>Total a descargar</th>
+                    <th contenteditable="false">Número aleatorio descargas</th>
+                    <th>Número de descargas</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot class="fondoTablas">
+                <tr>
+                    <td><strong>Totales</strong></td>
+                    <td id="totalRetrasos"></td>
+                    <td></td>
+                    <td id="totalLlegadas"></td>
+                    <td></td>
+                    <td></td>
+                    <td id="totalDescargas"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
 
-            <section>
-                <h2 class="titulo">Tabla Tasa de Llegadas</h2>
-                <table id="tablaLlegadas" class="table mx-auto">
-                    <thead>
-                        <tr>
-                            <th># Llegadas</th>
-                            <th>Probabilidad</th>
-                            <th>Probabilidad Acumulada</th>
-                            <th>Intervalo Aleatorio</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody contenteditable="true">
-                        <tr>
-                            <td>0</td>
-                            <td>0.13</td>
-                            <td>0.13</td>
-                            <td>01 al 13</td>
-                            <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>0.17</td>
-                            <td>0.3</td>
-                            <td>14 al 30</td>
-                            <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>0.15</td>
-                            <td>0.45</td>
-                            <td>31 al 45</td>
-                            <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>0.25</td>
-                            <td>0.7</td>
-                            <td>46 al 70</td>
-                            <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>0.2</td>
-                            <td>0.9</td>
-                            <td>71 al 90</td>
-                            <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>0.1</td>
-                            <td>1</td>
-                            <td>91 al 00</td>
-                            <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button onclick="agregarFila('tablaLlegadas')">Agregar Fila</button>
-            </section>
-        <section>
-            <h2 class="titulo">Tabla tasa de descargas</h2>
-            <table id="tablaDescargas" class="table mx-auto">
-                <thead>
-                    <tr>
-                        <th># Descargas</th>
-                        <th>Probabilidad</th>
-                        <th>Probabilidad Acumulada</th>
-                        <th>Intervalo Aleatorio</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody contenteditable="true">
-                    <tr>
-                        <td>1</td>
-                        <td>0.05</td>
-                        <td>0.05</td>
-                        <td>01 al 05</td>
-                        <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>0.15</td>
-                        <td>0.2</td>
-                        <td>06 al 20</td>
-                        <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>0.5</td>
-                        <td>0.7</td>
-                        <td>21 al 70</td>
-                        <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>0.2</td>
-                        <td>0.9</td>
-                        <td>71 al 90</td>
-                        <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>0.1</td>
-                        <td>1</td>
-                        <td>91 al 00</td>
-                        <td><button onclick="eliminarFila(this)">Eliminar</button></td>
-                    </tr>
-                </tbody> 
-            </table>
-            <button onclick="agregarFila('tablaDescargas')">Agregar fila</button>
-        </section>
-        
-            <button type="button" class="btn, button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                Resultados Promedio
-            </button>
-            <container>
-                <!-- Modal -->
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title, titulo2" id="staticBackdropLabel">Resultados promedio</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body, estiloModal">
-                                <p class="markModel">Promedio de barcazas retrasadas por día: <span id="promedioRetrasos"></span></p>
-                                <p class="markModel">Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span></p>
-                                <p class="markModel">Promedio de barcazas descargadas por día: <span id="promedioDescargas"></span></p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn, bordeB" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn, button">Aceptar</button>
-                            </div>
-                        </div>
+    <section>
+        <h2 class="titulo">Tabla Tasa de Llegadas</h2>
+        <table id="tablaLlegadas" class="table mx-auto">
+            <thead>
+                <tr>
+                    <th># Llegadas</th>
+                    <th>Probabilidad</th>
+                    <th>Probabilidad Acumulada</th>
+                    <th>Intervalo Aleatorio</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody contenteditable="true">
+                <tr>
+                    <td>0</td>
+                    <td>0.13</td>
+                    <td>0.13</td>
+                    <td>01 al 13</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0.17</td>
+                    <td>0.3</td>
+                    <td>14 al 30</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>0.15</td>
+                    <td>0.45</td>
+                    <td>31 al 45</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>0.25</td>
+                    <td>0.7</td>
+                    <td>46 al 70</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>0.2</td>
+                    <td>0.9</td>
+                    <td>71 al 90</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>0.1</td>
+                    <td>1</td>
+                    <td>91 al 00</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button onclick="agregarFila('tablaLlegadas')">Agregar Fila</button>
+    </section>
+    <section>
+        <h2 class="titulo">Tabla tasa de descargas</h2>
+        <table id="tablaDescargas" class="table mx-auto">
+            <thead>
+                <tr>
+                    <th># Descargas</th>
+                    <th>Probabilidad</th>
+                    <th>Probabilidad Acumulada</th>
+                    <th>Intervalo Aleatorio</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody contenteditable="true">
+                <tr>
+                    <td>1</td>
+                    <td>0.05</td>
+                    <td>0.05</td>
+                    <td>01 al 05</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>0.15</td>
+                    <td>0.2</td>
+                    <td>06 al 20</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>0.5</td>
+                    <td>0.7</td>
+                    <td>21 al 70</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>0.2</td>
+                    <td>0.9</td>
+                    <td>71 al 90</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>0.1</td>
+                    <td>1</td>
+                    <td>91 al 00</td>
+                    <td><button onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button onclick="agregarFila('tablaDescargas')">Agregar fila</button>
+    </section>
+
+    <div class="button-container" style="justify-content: center; gap: 10px; margin-top: 10px;">
+        <button type="button" class="btn"
+            style="background-color:#06444d; color:white; border:none; border-radius: 25px; padding: 6px 12px; cursor: pointer;"
+            id="btnModalResultados">
+            Resultados Promedio
+        </button>
+        <button id="btnVerResultados" class="btn"
+            style="background-color:#06444d; color:white; border:none; border-radius: 25px; padding: 6px 12px; cursor: pointer;">
+            Ver Resultados
+        </button>
+    </div>
+    +
+    + <!-- Contenedor para mensaje de advertencia -->
+    + <div id="mensajeAdvertencia"
+        style="display:none; background-color:#f8d7da; color:#842029; border:1px solid #f5c2c7; border-radius:5px; padding:10px; margin:10px auto; width:50%; text-align:center; font-weight:bold;">
+        + Por favor, genere primero la simulación para poder ver los resultados.
+        + </div>
+    <container>
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title, titulo2" id="staticBackdropLabel">Resultados promedio</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body, estiloModal">
+                        <p class="markModel">Promedio de barcazas retrasadas por día: <span
+                                id="promedioRetrasos"></span></p>
+                        <p class="markModel">Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span></p>
+                        <p class="markModel">Promedio de barcazas descargadas por día: <span
+                                id="promedioDescargas"></span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn, bordeB" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn, button">Aceptar</button>
                     </div>
                 </div>
-            </container>
-<script>
-    function eliminarFila(btn) {
-        const fila = btn.parentNode.parentNode;
-        fila.remove();
-    }
-
-    function agregarFila(tablaId) {
-        const tabla = document.getElementById(tablaId).getElementsByTagName("tbody")[0];
-        const fila = tabla.insertRow();
-        for (let i = 0; i < 4; i++) {
-            const celda = fila.insertCell();
-            celda.contentEditable = true;
-            celda.innerText = "";
-        }
-        const celdaBoton = fila.insertCell();
-        const boton = document.createElement("button");
-        boton.innerText = "Eliminar";
-        boton.onclick = () => eliminarFila(boton);
-        celdaBoton.appendChild(boton);
-    }
-
-    function generarSimulacion() {
-        const min = parseInt(document.getElementById("rangoMin").value);
-        const max = parseInt(document.getElementById("rangoMax").value);
-        const dias = parseInt(document.getElementById("dias").value);
-        const tbody = document.getElementById("tablaSimulacion").querySelector("tbody");
-        tbody.innerHTML = "";
-
-        let retrasosAnterior = 0;
-        let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
-
-        const resultadosDiarios = [];
-
-        for (let i = 1; i <= dias; i++) {
-            const rLlegada = Math.floor(Math.random() * (max - min + 1)) + min;
-            const rDescarga = Math.floor(Math.random() * (max - min + 1)) + min;
-            const llegadas = calcularLlegadas(rLlegada);
-            const totalADescargar = retrasosAnterior + llegadas;
-            const descargas = Math.min(totalADescargar, calcularDescargas(rDescarga));
-
-            const fila = document.createElement("tr");
-            fila.innerHTML = `
-      <td>${i}</td>
-      <td contenteditable="true">${retrasosAnterior}</td>
-      <td contenteditable="true">${rLlegada}</td>
-      <td contenteditable="true">${llegadas}</td>
-      <td>${totalADescargar}</td>
-      <td contenteditable="true">${rDescarga}</td>
-      <td>${descargas}</td>
-    `;
-            tbody.appendChild(fila);
-
-            resultadosDiarios.push({
-                dia: i,
-                retrasosDiaAnterior: retrasosAnterior,
-                numeroAleatorioLlegadas: rLlegada,
-                llegadasNocturnas: llegadas,
-                totalADescargar: totalADescargar,
-                numeroAleatorioDescargas: rDescarga,
-                descargas: descargas,
-            });
-
-            retrasosAnterior = totalADescargar - descargas;
-            totalRetrasos += retrasosAnterior;
-            totalLlegadas += llegadas;
-            totalDescargas += descargas;
-        }
-        actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, dias);
-
-        // Guardar resultados y promedios en localStorage para resultados.html
-        const promedios = {
-            promedioRetrasos: (totalRetrasos / dias).toFixed(2),
-            promedioLlegadas: (totalLlegadas / dias).toFixed(2),
-            promedioDescargas: (totalDescargas / dias).toFixed(2),
-        };
-        localStorage.setItem('resultadosSimulacion', JSON.stringify(resultadosDiarios));
-        localStorage.setItem('promediosSimulacion', JSON.stringify(promedios));
-
-        observarCambios();
-    }
-
-    function calcularLlegadas(valor) {
-        if (valor <= 13) return 0;
-        if (valor <= 30) return 1;
-        if (valor <= 45) return 2;
-        if (valor <= 70) return 3;
-        if (valor <= 90) return 4;
-        return 5;
-    }
-
-    function calcularDescargas(valor) {
-        if (valor <= 5) return 1;
-        if (valor <= 20) return 2;
-        if (valor <= 70) return 3;
-        if (valor <= 90) return 4;
-        return 5;
-    }
-
-    function actualizarTotales(retrasos, llegadas, descargas, dias) {
-        document.getElementById("totalRetrasos").textContent = retrasos;
-        document.getElementById("totalLlegadas").textContent = llegadas;
-        document.getElementById("totalDescargas").textContent = descargas;
-        document.getElementById("promedioRetrasos").textContent = (retrasos / dias).toFixed(2);
-        document.getElementById("promedioLlegadas").textContent = (llegadas / dias).toFixed(2);
-        document.getElementById("promedioDescargas").textContent = (descargas / dias).toFixed(2);
-    }
-
-
-    function observarCambios() {
-        const tbody = document.querySelector("#tablaSimulacion tbody");
-
-        tbody.querySelectorAll("td[contenteditable=true]").forEach(cell => {
-            cell.addEventListener("input", recalcular);
-            cell.addEventListener("blur", recalcular);
-            cell.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    this.blur(); // Forzar salida para disparar evento
-                }
-            });
-        });
-    }
-
-
-
-    function recalcular() {
-        const tbody = document.querySelector("#tablaSimulacion tbody");
-        let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
-
-        Array.from(tbody.rows).forEach(row => {
-            const prev = parseInt(row.cells[1].innerText) || 0;
-            const rLleg = parseInt(row.cells[2].innerText) || 0;
-            const lleg = parseInt(row.cells[3].innerText) || 0;
-            const rDesc = parseInt(row.cells[5].innerText) || 0;
-
-            const total = prev + lleg;
-            const descargas = total > 0 ? Math.min(total, calcularDescargas(rDesc)) : 0;
-
-            row.cells[4].textContent = total;
-            row.cells[6].textContent = descargas;
-
-            totalRetrasos += prev;
-            totalLlegadas += lleg;
-            totalDescargas += descargas;
-        });
-
-        actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, tbody.rows.length);
-    }
-
-</script>
-        <!-- Bootstrap JavaScript Libraries -->
-        <script
-            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-            crossorigin="anonymous"
-        ></script>
-
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-            crossorigin="anonymous"
-        ></script>
-
-    <script>
-        document.getElementById('btnGenerar').addEventListener('click', generarSimulacion);
-        document.getElementById('btnVerResultados').addEventListener('click', () => {
-            window.open('resultados.html', '_blank');
-        });
-    </script>
-    
-    </body>
-</html>
+            </div>
+        </div>
+    </container>
+    <script src="prueba.js"></script>
+    +
+    +
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" +
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" +
+        crossorigin="anonymous"></script>
+    +
+    +
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" +
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" +
+        crossorigin="anonymous"></script>

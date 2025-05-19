@@ -17,7 +17,7 @@ body::before {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url("/appweb/Img/bnoche.jpg");
+  background-image: url("/appweb/img/bnoche.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -53,13 +53,13 @@ h2 {
 }
 
 .titulo-seccion {
-  color: #f8f9fa; 
+  color: #f8f9fa;
 }
 
 /* Secciones de resultados */
 section {
   margin-bottom: 2rem;
-  color: #f8f9fa; 
+  color: #f8f9fa;
 }
 
 /* Ajuste de fuente para párrafos en costos y resultados promedio */
@@ -67,7 +67,7 @@ section {
 #resultadosPromedio p {
   font-size: 1.1rem;
   margin: 0.3rem 0;
-  color: #f8f9fa; 
+  color: #f8f9fa;
 }
 
 /* Tarjetas de gráficos */
