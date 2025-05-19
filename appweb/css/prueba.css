@@ -80,7 +80,7 @@ td[contenteditable="true"]:focus {
     background-repeat: no-repeat;
     background-position: center;
     font-style: oblique;
-    color: white;
+    color: white !important;
     font-weight: 600;
     font-size: 1.1rem;
     padding: 15px;
@@ -120,48 +120,75 @@ td[contenteditable="true"]:focus {
     margin-top: 10px;
 }
 
+/*Alerta*/
+.alerta-elegante {
+    display: none;
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin: 20px auto;
+    width: 60%;
+    text-align: left;
+    font-weight: 500;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-.modal-content {
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+.alerta-icono {
+    font-size: 20px;
+    color: #ffc107;
+}
+
+.alerta-texto {
+    flex: 1;
+}
+
+
+
+/* Modal styles */ 
+.custom-modal {
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     border: none;
 }
 
-.modal-header {
-    background-color: #06444d;
-    color: white;
-    border-bottom: 2px solid #046377;
-    border-radius: 0.75rem 0.75rem 0 0;
+.custom-modal__header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 16px 24px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 
-.modal-title {
-    font-weight: bold;
-    font-size: 1.25rem;
-}
-
-.modal-body {
-    background-color: #0a5a6e;
-    color: white;
-    font-size: 1rem;
-    padding: 20px;
-    border-radius: 0 0 0.75rem 0.75rem;
-}
-
-.modal-footer {
-    background-color: #06444d;
-    border-top: 2px solid #046377;
-    border-radius: 0 0 0.75rem 0.75rem;
-}
-
-.modal-footer .btn {
-    background-color: #046377;
-    border: none;
-    border-radius: 25px;
-    padding: 6px 15px;
-    color: white;
+.custom-modal__title {
+    font-size: 20px;
     font-weight: 600;
+    margin: 0;
+    color: #343a40;
 }
 
-.modal-footer .btn:hover {
-    background-color: #06444d;
+.custom-modal__body {
+    padding: 24px;
+    background-color: #06444d !important;
+    color: white !important;
+    font-size: 16px;
+}
+
+.custom-modal__footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 12px 24px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+/* Estilo para los textos del cuerpo */
+.markModel {
+    font-weight: 500;
+    margin-bottom: 10px;
 }

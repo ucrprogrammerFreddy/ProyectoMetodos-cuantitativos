@@ -189,7 +189,8 @@ document.getElementById('btnModalResultados').addEventListener('click', () => {
     const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
     if (promedios) {
         mensajeAdvertencia.style.display = 'none';
-        const modal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+        const modalElement = document.getElementById('staticBackdrop');
+        const modal = new bootstrap.Modal(modalElement);
         modal.show();
         document.getElementById('promedioRetrasos').textContent = promedios.promedioRetrasos;
         document.getElementById('promedioLlegadas').textContent = promedios.promedioLlegadas;
