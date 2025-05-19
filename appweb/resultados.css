@@ -1,0 +1,137 @@
+/* Estilo general del body */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Imagen de fondo */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("/appweb/Img/bnoche.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+  filter: brightness(0.7) contrast(1.2) saturate(1.1);
+}
+
+/* Capa oscura encima del fondo */
+.overlay {
+  background-color: rgba(20, 30, 40, 0.6);
+  min-height: 100vh;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(83, 197, 144, 0.5);
+}
+
+/* Encabezados */
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #f8f9fa;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.titulo-seccion {
+  color: #f8f9fa; 
+}
+
+/* Secciones de resultados */
+section {
+  margin-bottom: 2rem;
+  color: #f8f9fa; 
+}
+
+/* Ajuste de fuente para párrafos en costos y resultados promedio */
+#costos p,
+#resultadosPromedio p {
+  font-size: 1.1rem;
+  margin: 0.3rem 0;
+  color: #f8f9fa; 
+}
+
+/* Tarjetas de gráficos */
+.chart-container {
+  background-color: rgba(230, 240, 245, 0.9);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: #212529;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Canvas responsivo */
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Botón  */
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 30px;
+  transition: background-color 0.3s ease;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  color: white;
+}
+
+/* portada inicial */
+.intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* Sección de gráficos */
+.graficos-section {
+  background-color: #e6f0f5;
+  color: #212529;
+  padding: 4rem 2rem;
+}
+
+/* Animación suave al hacer scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/*  transiciones opcionales */
+.chart-container {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
+}
+
+.chart-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

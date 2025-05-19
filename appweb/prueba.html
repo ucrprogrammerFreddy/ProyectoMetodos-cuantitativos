@@ -149,7 +149,8 @@
                 <input type="number" id="rangoMax" value="100">
                 <label for="dias">Cantidad de días:</label>
                 <input type="number" id="dias" value="15">
-                <button onclick="generarSimulacion()">Generar simulación</button>
+            <button id="btnGenerar">Generar simulación</button>
+            <button id="btnVerResultados" style="background-color:#06444d; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">Ver Resultados</button>
                 </div>
 
             </section>
@@ -352,6 +353,8 @@
         let retrasosAnterior = 0;
         let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
 
+        const resultadosDiarios = [];
+
         for (let i = 1; i <= dias; i++) {
             const rLlegada = Math.floor(Math.random() * (max - min + 1)) + min;
             const rDescarga = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -371,12 +374,32 @@
     `;
             tbody.appendChild(fila);
 
+            resultadosDiarios.push({
+                dia: i,
+                retrasosDiaAnterior: retrasosAnterior,
+                numeroAleatorioLlegadas: rLlegada,
+                llegadasNocturnas: llegadas,
+                totalADescargar: totalADescargar,
+                numeroAleatorioDescargas: rDescarga,
+                descargas: descargas,
+            });
+
             retrasosAnterior = totalADescargar - descargas;
             totalRetrasos += retrasosAnterior;
             totalLlegadas += llegadas;
             totalDescargas += descargas;
         }
         actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, dias);
+
+        // Guardar resultados y promedios en localStorage para resultados.html
+        const promedios = {
+            promedioRetrasos: (totalRetrasos / dias).toFixed(2),
+            promedioLlegadas: (totalLlegadas / dias).toFixed(2),
+            promedioDescargas: (totalDescargas / dias).toFixed(2),
+        };
+        localStorage.setItem('resultadosSimulacion', JSON.stringify(resultadosDiarios));
+        localStorage.setItem('promediosSimulacion', JSON.stringify(promedios));
+
         observarCambios();
     }
 
@@ -461,6 +484,13 @@
             integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
             crossorigin="anonymous"
         ></script>
+
+    <script>
+        document.getElementById('btnGenerar').addEventListener('click', generarSimulacion);
+        document.getElementById('btnVerResultados').addEventListener('click', () => {
+            window.open('resultados.html', '_blank');
+        });
+    </script>
     
     </body>
 </html>
