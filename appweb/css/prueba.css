@@ -1,6 +1,6 @@
 .fondo {
     font-family: Arial, sans-serif;
-    background-image: url(/appweb/img/fondoBarco2.jpg);
+    background-image: url(../img/fondoBarco2.jpg);
     margin: 50px;
     height: auto;
     width: auto;
