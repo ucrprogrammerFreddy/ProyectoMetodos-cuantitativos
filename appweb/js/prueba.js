@@ -27,6 +27,38 @@ function agregarFila(tablaId) {
 }
 
 /**
+ * Muestra u oculta el mensaje de advertencia según el estado de la simulación.
+ */
+function actualizarMensajeAdvertencia() {
+    const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
+    const resultados = localStorage.getItem('resultadosSimulacion');
+    const promedios = localStorage.getItem('promediosSimulacion');
+    if (resultados && promedios) {
+        mensajeAdvertencia.style.display = 'none';
+    } else {
+        mensajeAdvertencia.style.display = 'block';
+    }
+}
+
+/**
+ * Habilita los botones de resultados y oculta el mensaje de advertencia.
+ */
+function habilitarBotonesResultados() {
+    document.getElementById('btnModalResultados').disabled = false;
+    document.getElementById('btnVerResultados').disabled = false;
+    actualizarMensajeAdvertencia();
+}
+
+/**
+ * Deshabilita los botones de resultados y muestra el mensaje de advertencia.
+ */
+function deshabilitarBotonesResultados() {
+    document.getElementById('btnModalResultados').disabled = true;
+    document.getElementById('btnVerResultados').disabled = true;
+    actualizarMensajeAdvertencia();
+}
+
+/**
  * Genera la simulación de llegadas y descargas, actualizando la tabla y calculando promedios.
  */
 function generarSimulacion() {
@@ -85,6 +117,9 @@ function generarSimulacion() {
     };
     localStorage.setItem('resultadosSimulacion', JSON.stringify(resultadosDiarios));
     localStorage.setItem('promediosSimulacion', JSON.stringify(promedios));
+
+    // Habilitar botones y ocultar mensaje de advertencia
+    habilitarBotonesResultados();
 
     observarCambios();
 }
@@ -178,24 +213,53 @@ function recalcular() {
 }
 
 // Eventos para botones y modal
-document.getElementById('btnGenerar').addEventListener('click', generarSimulacion);
-
-document.getElementById('btnVerResultados').addEventListener('click', () => {
-    window.open('resultados.html', '_blank');
+document.getElementById('btnGenerar').addEventListener('click', () => {
+    generarSimulacion();
 });
 
+// Control del modal para mostrar resultados promedio
 document.getElementById('btnModalResultados').addEventListener('click', () => {
     const promedios = JSON.parse(localStorage.getItem('promediosSimulacion'));
-    const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
     if (promedios) {
-        mensajeAdvertencia.style.display = 'none';
-        const modalElement = document.getElementById('staticBackdrop');
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
         document.getElementById('promedioRetrasos').textContent = promedios.promedioRetrasos;
         document.getElementById('promedioLlegadas').textContent = promedios.promedioLlegadas;
         document.getElementById('promedioDescargas').textContent = promedios.promedioDescargas;
+        const modalElement = document.getElementById('staticBackdrop');
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
     } else {
-        mensajeAdvertencia.style.display = 'block';
+        // Limpiar datos numéricos si no hay simulación
+        document.getElementById('promedioRetrasos').textContent = '';
+        document.getElementById('promedioLlegadas').textContent = '';
+        document.getElementById('promedioDescargas').textContent = '';
+        alert('Por favor, genere primero la simulación para poder ver los resultados.');
     }
+});
+
+// Control para abrir la página de resultados solo si hay datos válidos
+document.getElementById('btnVerResultados').addEventListener('click', () => {
+    const resultados = localStorage.getItem('resultadosSimulacion');
+    const promedios = localStorage.getItem('promediosSimulacion');
+    if (resultados && promedios) {
+        window.open('resultados.html', '_blank');
+    } else {
+        alert('Por favor, genere primero la simulación para poder ver los resultados.');
+    }
+});
+
+// Inicialmente deshabilitar botones y mostrar mensaje de advertencia
+window.onload = () => {
+    document.getElementById('btnModalResultados').disabled = true;
+    document.getElementById('btnVerResultados').disabled = true;
+    const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
+    mensajeAdvertencia.style.display = 'block';
+};
+
+// Habilitar botones y ocultar mensaje de advertencia al generar simulación
+document.getElementById('btnGenerar').addEventListener('click', () => {
+    generarSimulacion();
+    document.getElementById('btnModalResultados').disabled = false;
+    document.getElementById('btnVerResultados').disabled = false;
+    const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
+    mensajeAdvertencia.style.display = 'none';
 });
