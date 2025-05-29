@@ -192,3 +192,19 @@ td[contenteditable="true"]:focus {
     font-weight: 500;
     margin-bottom: 10px;
 }
+
+/* Botón principal personalizado */
+.btn-principal {
+    background-color: #06444d !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 25px !important;
+    padding: 6px 12px !important;
+    cursor: pointer !important;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.btn-principal:hover {
+    background-color: #046377 !important;
+}
