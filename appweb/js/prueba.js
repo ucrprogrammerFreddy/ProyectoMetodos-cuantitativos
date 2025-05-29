@@ -118,6 +118,9 @@ function generarSimulacion() {
     localStorage.setItem('resultadosSimulacion', JSON.stringify(resultadosDiarios));
     localStorage.setItem('promediosSimulacion', JSON.stringify(promedios));
 
+    // Calcular y guardar métricas por periodo para comparación
+    calcularPeriodosYGuardar(resultadosDiarios);
+
     // Habilitar botones y ocultar mensaje de advertencia
     habilitarBotonesResultados();
 
@@ -210,6 +213,43 @@ function recalcular() {
     });
 
     actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, tbody.rows.length);
+}
+
+/**
+ * Divide los resultados diarios en dos periodos y calcula métricas por periodo.
+ * Guarda los datos en localStorage para su uso en resultados.html.
+ */
+function calcularPeriodosYGuardar(resultadosDiarios, costoPorRetraso = 100) {
+    const totalDias = resultadosDiarios.length;
+    const mitad = Math.ceil(totalDias / 2);
+
+    const periodo1 = resultadosDiarios.slice(0, mitad);
+    const periodo2 = resultadosDiarios.slice(mitad);
+
+    function calcularMetrica(periodo) {
+        let llegadas = 0, descargas = 0, retrasos = 0;
+        periodo.forEach(dia => {
+            llegadas += dia.llegadasNocturnas;
+            descargas += dia.descargas;
+            retrasos += dia.retrasosDiaAnterior;
+        });
+        return {
+            llegadas,
+            descargas,
+            retrasos,
+            costo: retrasos * costoPorRetraso
+        };
+    }
+
+    const metrica1 = calcularMetrica(periodo1);
+    const metrica2 = calcularMetrica(periodo2);
+
+    localStorage.setItem('periodosSimulacion', JSON.stringify({
+        periodo1: metrica1,
+        periodo2: metrica2,
+        rango1: { inicio: 1, fin: mitad },
+        rango2: { inicio: mitad + 1, fin: totalDias }
+    }));
 }
 
 // Eventos para botones y modal

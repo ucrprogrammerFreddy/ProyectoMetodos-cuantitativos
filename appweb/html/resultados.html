@@ -16,7 +16,12 @@
         <section id="costos" class="mb-4">
             <h2 class="titulo-seccion">Costos Asociados</h2>
             <p>Costo por barcaza retrasada por día: <span id="costoRetrasos"></span> USD</p>
-            <p>Costo total estimado: <span id="costoTotal"></span> USD</p>
+            <p>Costo total estimado por retrasos: <span id="costoTotal"></span> USD</p>
+            <p>Costo por operación de descarga: <span id="costoOperacion"></span> USD</p>
+            <p>Costo total de operaciones de descarga: <span id="costoTotalOperacion"></span> USD</p>
+            <p>Costo fijo diario (personal, energía, etc): <span id="costoFijo"></span> USD</p>
+            <p>Costo fijo total: <span id="costoFijoTotal"></span> USD</p>
+            <p><strong>Costo global estimado: <span id="costoGlobal"></span> USD</strong></p>
         </section>
 
         <section id="resultadosPromedio" class="mb-4">
@@ -53,11 +58,18 @@
             <canvas id="descargasColumnChart"></canvas>
         </section>
 
+        <section class="chart-container">
+            <h2>Comparación por Periodos</h2>
+            <canvas id="comparacionPeriodosChart"></canvas>
+            <div id="infoPeriodos" style="margin-top: 1em; color:#212529;">
+                <!-- Aquí se mostrarán los rangos de días de cada periodo -->
+            </div>
+        </section>
+
         <div class="text-center">
             <a href="../html/prueba.html" class="btn btn-primary">Volver</a>
         </div>
     </main>
-
     <script src="../js/resultados.js"></script>
 </body>
 

@@ -87,27 +87,53 @@ function extraerDescargasDiarias(resultados) {
 
 // Inicializa los gráficos con los datos obtenidos y muestra los costos calculados
 function inicializarGraficos() {
+    // Obtener datos de simulación y promedios desde localStorage
     const datos = obtenerDatosSimulacion();
     if (!datos) return;
 
     const { resultados, promedios } = datos;
 
+    // Calcular métricas para gráficos
     const distribucionLlegadas = calcularDistribucionLlegadas(resultados);
     const retrasosDiarios = extraerRetrasosDiarios(resultados);
     const descargasDiarias = extraerDescargasDiarias(resultados);
 
+    // Definición de costos asociados (puedes ajustar estos valores según tu modelo)
     const costoPorRetraso = 100; // Costo en USD por barcaza retrasada por día
+    const costoOperacion = 50;   // Costo en USD por cada operación de descarga
+    const costoFijoDiario = 200; // Costo fijo diario (personal, energía, etc.)
+
+    // Calcular costos totales
+    const totalRetrasos = resultados.reduce((acc, dia) => acc + dia.retrasosDiaAnterior, 0);
+    const totalDescargas = resultados.reduce((acc, dia) => acc + dia.descargas, 0);
+    const diasSimulados = resultados.length;
+
+    const costoTotalRetrasos = totalRetrasos * costoPorRetraso;
+    const costoTotalOperacion = totalDescargas * costoOperacion;
+    const costoFijoTotal = diasSimulados * costoFijoDiario;
+    const costoGlobal = costoTotalRetrasos + costoTotalOperacion + costoFijoTotal;
 
     // Actualiza los valores promedio en la interfaz
     document.getElementById('promedioRetrasos').textContent = promedios.promedioRetrasos;
     document.getElementById('promedioLlegadas').textContent = promedios.promedioLlegadas;
     document.getElementById('promedioDescargas').textContent = promedios.promedioDescargas;
 
+    // Actualiza los valores de costos asociados en la interfaz
+    document.getElementById('costoRetrasos').textContent = costoPorRetraso.toFixed(2);
+    document.getElementById('costoTotal').textContent = costoTotalRetrasos.toFixed(2);
+    document.getElementById('costoOperacion').textContent = costoOperacion.toFixed(2);
+    document.getElementById('costoTotalOperacion').textContent = costoTotalOperacion.toFixed(2);
+    document.getElementById('costoFijo').textContent = costoFijoDiario.toFixed(2);
+    document.getElementById('costoFijoTotal').textContent = costoFijoTotal.toFixed(2);
+    document.getElementById('costoGlobal').textContent = costoGlobal.toFixed(2);
+
+    // --- Gráficos ---
     // Gráfico de barras para los promedios diarios
     const ctxBar = document.getElementById('promediosBarChart').getContext('2d');
     new Chart(ctxBar, {
         type: 'bar',
         data: {
+            // Eje X: Tipos de métricas
             labels: ['Retrasos', 'Llegadas', 'Descargas'],
             datasets: [{
                 label: 'Promedio Diario',
@@ -128,7 +154,7 @@ function inicializarGraficos() {
         },
     });
 
-    // Gráfico de área para la distribución de llegadas 
+    // Gráfico de área para la distribución de llegadas nocturnas
     const ctxArea = document.getElementById('llegadasPieChart').getContext('2d');
     new Chart(ctxArea, {
         type: 'line',
@@ -186,14 +212,60 @@ function inicializarGraficos() {
             },
         },
     });
+}
 
-    // Muestra los costos calculados en la interfaz
-    const costoRetrasosElem = document.getElementById('costoRetrasos');
-    const costoTotalElem = document.getElementById('costoTotal');
+// Mostrar comparación de periodos en gráfico de barras
+function mostrarComparacionPeriodos() {
+    const periodos = JSON.parse(localStorage.getItem('periodosSimulacion') || '{}');
+    if (!periodos.periodo1 || !periodos.periodo2) return;
 
-    costoRetrasosElem.textContent = costoPorRetraso.toFixed(2);
-    const costoTotal = parseFloat(promedios.promedioRetrasos) * costoPorRetraso * resultados.length;
-    costoTotalElem.textContent = costoTotal.toFixed(2);
+    const labels = ['Llegadas', 'Descargas', 'Retrasos', 'Costos'];
+    const data1 = [
+        periodos.periodo1.llegadas,
+        periodos.periodo1.descargas,
+        periodos.periodo1.retrasos,
+        periodos.periodo1.costo
+    ];
+    const data2 = [
+        periodos.periodo2.llegadas,
+        periodos.periodo2.descargas,
+        periodos.periodo2.retrasos,
+        periodos.periodo2.costo
+    ];
+
+    const ctx = document.getElementById('comparacionPeriodosChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: `Periodo 1 (${periodos.rango1.inicio}-${periodos.rango1.fin})`,
+                    data: data1,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                },
+                {
+                    label: `Periodo 2 (${periodos.rango2.inicio}-${periodos.rango2.fin})`,
+                    data: data2,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Mostrar rangos de días
+    document.getElementById('infoPeriodos').innerHTML =
+        `<strong>Periodo 1:</strong> Días ${periodos.rango1.inicio} a ${periodos.rango1.fin} &nbsp; | &nbsp; 
+         <strong>Periodo 2:</strong> Días ${periodos.rango2.inicio} a ${periodos.rango2.fin}`;
 }
 
 // Función para mostrar los gráficos al hacer scroll con animación 
@@ -220,4 +292,5 @@ function setupScrollAnimation() {
 window.onload = () => {
     inicializarGraficos();
     setupScrollAnimation();
+    mostrarComparacionPeriodos();
 };
