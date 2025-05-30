@@ -135,3 +135,73 @@ html {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Tarjeta de costos y promedios */
+.card-costos, .card-promedio {
+  background: rgba(30, 40, 60, 0.92);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+  padding: 1.5rem 2rem 1.2rem 2rem;
+  margin-bottom: 1.5rem;
+  color: #f8f9fa;
+  border: 1.5px solid #4fd1c5;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card-costos .titulo-seccion,
+.card-promedio .titulo-seccion {
+  color: #4fd1c5;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.lista-costos, .lista-promedio {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.lista-costos li, .lista-promedio li {
+  padding: 0.5em 0;
+  border-bottom: 1px solid #3a4a5a44;
+  font-size: 1.08rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.lista-costos li:last-child, .lista-promedio li:last-child {
+  border-bottom: none;
+}
+
+.costo-global {
+  background: linear-gradient(90deg, #4fd1c5 60%, #2b6cb0 100%);
+  color: #222;
+  border-radius: 12px;
+  padding: 0.7em 1em;
+  font-size: 1.15rem;
+  text-align: center;
+  margin-top: 1em;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+}
+
+.icono-costos, .icono-prom, .icono-item {
+  font-size: 1.2em;
+  vertical-align: middle;
+  color: #ffe066;
+}
+
+.card-promedio {
+  border: 1.5px solid #ffe066;
+}
+
+.card-promedio .titulo-seccion {
+  color: #ffe066;
+}

@@ -208,3 +208,42 @@ td[contenteditable="true"]:focus {
 .btn-principal:hover {
     background-color: #046377 !important;
 }
+
+/* Tarjeta y lista para el modal de resultados promedio */
+.card-promedio {
+    background: rgba(30, 40, 60, 0.92);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    padding: 1.2rem 1.5rem 1rem 1.5rem;
+    margin-bottom: 1rem;
+    color: #f8f9fa;
+    border: 1.5px solid #ffe066;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.lista-promedio {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lista-promedio li {
+    padding: 0.5em 0;
+    border-bottom: 1px solid #3a4a5a44;
+    font-size: 1.08rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.lista-promedio li:last-child {
+    border-bottom: none;
+}
+
+.icono-prom, .icono-item {
+    font-size: 1.2em;
+    vertical-align: middle;
+    color: #ffe066;
+}
