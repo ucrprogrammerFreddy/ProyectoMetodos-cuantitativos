@@ -85,6 +85,21 @@ function extraerDescargasDiarias(resultados) {
     return resultados.map(dia => dia.descargas);
 }
 
+// Calcula la utilización diaria del servidor (descargas/capacidad máxima)
+function calcularUtilizacionServidor(resultados, capacidadMaxima = 5) {
+    return resultados.map(dia => (dia.descargas / capacidadMaxima));
+}
+
+// Calcula los tiempos promedio en cola y en el sistema por día
+function calcularTiemposColaSistema(resultados) {
+    // Tiempo en cola: retrasos del día anterior
+    // Tiempo en sistema: tiempo en cola + 1 (día de servicio)
+    return resultados.map(dia => ({
+        cola: dia.retrasosDiaAnterior,
+        sistema: dia.retrasosDiaAnterior + 1
+    }));
+}
+
 // Inicializa los gráficos con los datos obtenidos y muestra los costos calculados
 function inicializarGraficos() {
     // Obtener datos de simulación y promedios desde localStorage
@@ -211,6 +226,73 @@ function inicializarGraficos() {
                 y: { beginAtZero: true },
             },
         },
+    });
+
+    // --- NUEVO: Utilización del servidor diaria ---
+    const utilizacionDiaria = calcularUtilizacionServidor(resultados, 5);
+    const ctxUtil = document.getElementById('utilizacionServidorChart').getContext('2d');
+    new Chart(ctxUtil, {
+        type: 'line',
+        data: {
+            labels: Array.from({ length: utilizacionDiaria.length }, (_, i) => i + 1),
+            datasets: [{
+                label: 'Utilización del Servidor',
+                data: utilizacionDiaria,
+                fill: true,
+                backgroundColor: 'rgba(79,209,197,0.18)',
+                borderColor: '#4fd1c5',
+                tension: 0.2,
+                pointRadius: 3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 1,
+                    ticks: {
+                        callback: function(value) { return (value * 100).toFixed(0) + '%'; }
+                    }
+                }
+            }
+        }
+    });
+
+    // --- NUEVO: Tiempos promedio en cola y en el sistema ---
+    const tiempos = calcularTiemposColaSistema(resultados);
+    const tiemposCola = tiempos.map(t => t.cola);
+    const tiemposSistema = tiempos.map(t => t.sistema);
+    const ctxTiempos = document.getElementById('tiemposPromedioChart').getContext('2d');
+    new Chart(ctxTiempos, {
+        type: 'line',
+        data: {
+            labels: Array.from({ length: tiemposCola.length }, (_, i) => i + 1),
+            datasets: [
+                {
+                    label: 'Tiempo en Cola',
+                    data: tiemposCola,
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255,99,132,0.13)',
+                    fill: true,
+                    tension: 0.2,
+                    pointRadius: 3
+                },
+                {
+                    label: 'Tiempo en el Sistema',
+                    data: tiemposSistema,
+                    borderColor: '#2b6cb0',
+                    backgroundColor: 'rgba(43,108,176,0.10)',
+                    fill: true,
+                    tension: 0.2,
+                    pointRadius: 3
+                }
+            ]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
     });
 }
 

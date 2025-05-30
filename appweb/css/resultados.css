@@ -84,6 +84,13 @@ section {
   transition: box-shadow 0.3s;
 }
 
+/* Mejora para los nuevos gráficos */
+#utilizacionServidorChart, #tiemposPromedioChart {
+  background: transparent;
+  margin-top: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
 /* Canvas responsivo */
 canvas {
   max-width: 100%;
