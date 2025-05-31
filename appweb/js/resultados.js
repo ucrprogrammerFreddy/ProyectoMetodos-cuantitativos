@@ -1,4 +1,4 @@
-// Obtiene los datos de simulación y promedios almacenados en localStorage
+// Obtiene los datos de simulación y promedios almacenados en localStorage en objeto
 function obtenerDatosSimulacion() {
     const resultados = localStorage.getItem('resultadosSimulacion');
     const promedios = localStorage.getItem('promediosSimulacion');
@@ -64,8 +64,8 @@ function obtenerDatosSimulacion() {
 }
 
 // Calcula la distribución de llegadas nocturnas a partir de los resultados
-function calcularDistribucionLlegadas(resultados) {
-    const distribucion = [0, 0, 0, 0, 0, 0];
+function calcularDistribucionLlegadas(resultados) { //resultados es un objeto con los resultados de la función anterior
+    const distribucion = [0, 0, 0, 0, 0, 0]; //de 0 a 5
     resultados.forEach(dia => {
         const llegadas = dia.llegadasNocturnas;
         if (llegadas >= 0 && llegadas <= 5) {
