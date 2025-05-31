@@ -40,6 +40,9 @@ function actualizarMensajeAdvertencia() {
     }
 }
 
+//mensaje
+//const mensajeAdvertencia = `Por favor, genere primero la simulación para poder ver los resultados.`;
+
 /**
  * Habilita los botones de resultados y oculta el mensaje de advertencia.
  */
@@ -55,7 +58,7 @@ function habilitarBotonesResultados() {
 function deshabilitarBotonesResultados() {
     document.getElementById('btnModalResultados').disabled = true;
     document.getElementById('btnVerResultados').disabled = true;
-    actualizarMensajeAdvertencia();
+    //actualizarMensajeAdvertencia();
 }
 
 /**
@@ -82,14 +85,14 @@ function generarSimulacion() {
 
         const fila = document.createElement("tr");
         fila.innerHTML = `
-  <td>${i}</td>
-  <td contenteditable="true">${retrasosAnterior}</td>
-  <td contenteditable="true">${rLlegada}</td>
-  <td contenteditable="true">${llegadas}</td>
-  <td>${totalADescargar}</td>
-  <td contenteditable="true">${rDescarga}</td>
-  <td>${descargas}</td>
-`;
+            <td>${i}</td>
+            <td contenteditable="true">${retrasosAnterior}</td>
+            <td>${rLlegada}</td>
+            <td contenteditable="true">${llegadas}</td>
+            <td>${totalADescargar}</td>
+            <td contenteditable="true">${rDescarga}</td>
+            <td>${descargas}</td>
+            `;
         tbody.appendChild(fila);
 
         resultadosDiarios.push({
@@ -165,9 +168,9 @@ function actualizarTotales(retrasos, llegadas, descargas, dias) {
     document.getElementById("totalRetrasos").textContent = retrasos;
     document.getElementById("totalLlegadas").textContent = llegadas;
     document.getElementById("totalDescargas").textContent = descargas;
-    document.getElementById("promedioRetrasos").textContent = (retrasos / dias).toFixed(2);
-    document.getElementById("promedioLlegadas").textContent = (llegadas / dias).toFixed(2);
-    document.getElementById("promedioDescargas").textContent = (descargas / dias).toFixed(2);
+    // document.getElementById("promedioRetrasos").textContent = (retrasos / dias).toFixed(2);   esto se llena en el evento q tiene el click del boton q abre el mmodal
+    // document.getElementById("promedioLlegadas").textContent = (llegadas / dias).toFixed(2);
+    // document.getElementById("promedioDescargas").textContent = (descargas / dias).toFixed(2);
 }
 
 /**
@@ -196,16 +199,18 @@ function recalcular() {
     let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
 
     Array.from(tbody.rows).forEach(row => {
-        const prev = parseInt(row.cells[1].innerText) || 0;
-        const rLleg = parseInt(row.cells[2].innerText) || 0;
-        const lleg = parseInt(row.cells[3].innerText) || 0;
-        const rDesc = parseInt(row.cells[5].innerText) || 0;
 
-        const total = prev + lleg;
+        //se convierten los textos de las celdas en numero
+        const prev  = parseInt(row.cells[1].innerText) || 0; // Retrasos día anterior
+        const lleg  = parseInt(row.cells[3].innerText) || 0; // Llegadas nocturnas
+        const rDesc = parseInt(row.cells[5].innerText) || 0; // Número aleatorio de descargas
+
+        const total = prev + lleg; //total que hay q descargar ese dia
         const descargas = total > 0 ? Math.min(total, calcularDescargas(rDesc)) : 0;
 
-        row.cells[4].textContent = total;
-        row.cells[6].textContent = descargas;
+        row.cells[4].textContent = total;      // se pone en la celda el Total a descargar 
+        row.cells[6].textContent = descargas;  // se pone en la celda Número de descargas
+
 
         totalRetrasos += prev;
         totalLlegadas += lleg;
@@ -223,8 +228,8 @@ function calcularPeriodosYGuardar(resultadosDiarios, costoPorRetraso = 100) {
     const totalDias = resultadosDiarios.length;
     const mitad = Math.ceil(totalDias / 2);
 
-    const periodo1 = resultadosDiarios.slice(0, mitad);
-    const periodo2 = resultadosDiarios.slice(mitad);
+    const periodo1 = resultadosDiarios.slice(0, mitad); //inicio, fin-1
+    const periodo2 = resultadosDiarios.slice(mitad); //de la mitad en adelante
 
     function calcularMetrica(periodo) {
         let llegadas = 0, descargas = 0, retrasos = 0;
@@ -252,14 +257,14 @@ function calcularPeriodosYGuardar(resultadosDiarios, costoPorRetraso = 100) {
     }));
 }
 
-// Eventos para botones y modal
-document.getElementById('btnGenerar').addEventListener('click', () => {
-    generarSimulacion();
-});
+// // Eventos para botones y modal
+// document.getElementById('btnGenerar').addEventListener('click', () => {
+//     generarSimulacion();
+// });
 
 // Control del modal para mostrar resultados promedio
 document.getElementById('btnModalResultados').addEventListener('click', () => {
-    const promedios = JSON.parse(localStorage.getItem('promediosSimulacion'));
+    const promedios = JSON.parse(localStorage.getItem('promediosSimulacion')); //guarda un objeto con los promedios
     if (promedios) {
         document.getElementById('promedioRetrasos').textContent = promedios.promedioRetrasos;
         document.getElementById('promedioLlegadas').textContent = promedios.promedioLlegadas;
@@ -289,10 +294,7 @@ document.getElementById('btnVerResultados').addEventListener('click', () => {
 
 // Inicialmente deshabilitar botones y mostrar mensaje de advertencia
 window.onload = () => {
-    document.getElementById('btnModalResultados').disabled = true;
-    document.getElementById('btnVerResultados').disabled = true;
-    const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
-    mensajeAdvertencia.style.display = 'block';
+    deshabilitarBotonesResultados();
 };
 
 // Habilitar botones y ocultar mensaje de advertencia al generar simulación

@@ -174,12 +174,14 @@
         <button onclick="agregarFila('tablaDescargas')">Agregar fila</button>
     </section>
 
-    <div class="button-container">
-        <button type="button" class="btn btn-principal"
+    <div class="button-container" style="justify-content: center; gap: 10px; margin-top: 10px;">
+        <button type="button" class="btn"
+            style="background-color:#06444d; color:white; border:none; border-radius: 25px; padding: 6px 12px; cursor: pointer;"
             id="btnModalResultados">
             Resultados Promedio
         </button>
-        <button id="btnVerResultados" class="btn btn-principal">
+        <button id="btnVerResultados" class="btn"
+            style="background-color:#06444d; color:white; border:none; border-radius: 25px; padding: 6px 12px; cursor: pointer;">
             Ver Resultados
         </button>
     </div>
@@ -199,19 +201,15 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content custom-modal">
                     <div class="modal-header custom-modal__header">
-                        <h5 class="custom-modal__title titulo2" id="staticBackdropLabel">
-                            <span class="icono-prom">&#128202;</span> Resultados promedio
-                        </h5>
+                        <h5 class="custom-modal__title titulo2" id="staticBackdropLabel">Resultados promedio</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body custom-modal__body estiloModal">
-                        <div class="card-promedio">
-                            <ul class="lista-promedio">
-                                <li><span class="icono-item">&#9201;</span> Promedio de barcazas retrasadas por día: <span id="promedioRetrasos"></span></li>
-                                <li><span class="icono-item">&#128347;</span> Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span></li>
-                                <li><span class="icono-item">&#128230;</span> Promedio de barcazas descargadas por día: <span id="promedioDescargas"></span></li>
-                            </ul>
-                        </div>
+                        <p class="markModel">Promedio de barcazas retrasadas por día: <span
+                                id="promedioRetrasos"></span></p>
+                        <p class="markModel">Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span></p>
+                        <p class="markModel">Promedio de barcazas descargadas por día: <span
+                                id="promedioDescargas"></span></p>
                     </div>
                     <div class="modal-footer custom-modal__footer">
                         <button type="button" class="btn bordeB" data-bs-dismiss="modal">Cerrar</button>
