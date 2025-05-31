@@ -29,27 +29,25 @@ function agregarFila(tablaId) {
 /**
  * Muestra u oculta el mensaje de advertencia según el estado de la simulación.
  */
-function actualizarMensajeAdvertencia() {
-    const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
-    const resultados = localStorage.getItem('resultadosSimulacion');
-    const promedios = localStorage.getItem('promediosSimulacion');
-    if (resultados && promedios) {
-        mensajeAdvertencia.style.display = 'none';
-    } else {
-        mensajeAdvertencia.style.display = 'block';
-    }
-}
+// function actualizarMensajeAdvertencia() {
+//     const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
+//     const resultados = localStorage.getItem('resultadosSimulacion');
+//     const promedios = localStorage.getItem('promediosSimulacion');
+//     if (resultados && promedios) {
+//         mensajeAdvertencia.style.display = 'none';
+//     } else {
+//         mensajeAdvertencia.style.display = 'block';
+//     }
+// }
 
-//mensaje
-//const mensajeAdvertencia = `Por favor, genere primero la simulación para poder ver los resultados.`;
 
 /**
  * Habilita los botones de resultados y oculta el mensaje de advertencia.
- */
+//  */
 function habilitarBotonesResultados() {
     document.getElementById('btnModalResultados').disabled = false;
     document.getElementById('btnVerResultados').disabled = false;
-    actualizarMensajeAdvertencia();
+    //actualizarMensajeAdvertencia();
 }
 
 /**
@@ -125,7 +123,7 @@ function generarSimulacion() {
     calcularPeriodosYGuardar(resultadosDiarios);
 
     // Habilitar botones y ocultar mensaje de advertencia
-    habilitarBotonesResultados();
+    //habilitarBotonesResultados();
 
     observarCambios();
 }
@@ -300,8 +298,7 @@ window.onload = () => {
 // Habilitar botones y ocultar mensaje de advertencia al generar simulación
 document.getElementById('btnGenerar').addEventListener('click', () => {
     generarSimulacion();
-    document.getElementById('btnModalResultados').disabled = false;
-    document.getElementById('btnVerResultados').disabled = false;
+    habilitarBotonesResultados();
     const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
     mensajeAdvertencia.style.display = 'none';
 });
