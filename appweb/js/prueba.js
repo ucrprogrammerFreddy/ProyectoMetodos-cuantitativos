@@ -1,304 +1,456 @@
-/**
- * Elimina una fila de la tabla cuando se hace clic en el botón "Eliminar".
- * @param {HTMLElement} btn - El botón que fue clickeado.
- */
+// =====================
+// Elimina una fila de una tabla (usado en tablas de probabilidades)
+// =====================
 function eliminarFila(btn) {
-    const fila = btn.parentNode.parentNode;
-    fila.remove();
+  const fila = btn.parentNode.parentNode;
+  fila.remove();
 }
 
-/**
- * Agrega una nueva fila editable a la tabla especificada.
- * @param {string} tablaId - El ID de la tabla donde se agregará la fila.
- */
+// =====================
+// Agrega una fila editable a una tabla de probabilidades
+// =====================
 function agregarFila(tablaId) {
-    const tabla = document.getElementById(tablaId).getElementsByTagName("tbody")[0];
-    const fila = tabla.insertRow();
-    for (let i = 0; i < 4; i++) {
-        const celda = fila.insertCell();
-        celda.contentEditable = true;
-        celda.innerText = "";
-    }
-    const celdaBoton = fila.insertCell();
-    const boton = document.createElement("button");
-    boton.innerText = "Eliminar";
-    boton.onclick = () => eliminarFila(boton);
-    celdaBoton.appendChild(boton);
+  const tabla = document
+    .getElementById(tablaId)
+    .getElementsByTagName("tbody")[0];
+  const fila = tabla.insertRow();
+  for (let i = 0; i < 4; i++) {
+    const celda = fila.insertCell();
+    celda.contentEditable = true;
+    celda.innerText = "";
+  }
+  const celdaBoton = fila.insertCell();
+  const boton = document.createElement("button");
+  boton.innerText = "Eliminar";
+  boton.onclick = () => eliminarFila(boton);
+  celdaBoton.appendChild(boton);
 }
 
-/**
- * Muestra u oculta el mensaje de advertencia según el estado de la simulación.
- */
-// function actualizarMensajeAdvertencia() {
-//     const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
-//     const resultados = localStorage.getItem('resultadosSimulacion');
-//     const promedios = localStorage.getItem('promediosSimulacion');
-//     if (resultados && promedios) {
-//         mensajeAdvertencia.style.display = 'none';
-//     } else {
-//         mensajeAdvertencia.style.display = 'block';
-//     }
-// }
-
-
-/**
- * Habilita los botones de resultados y oculta el mensaje de advertencia.
-//  */
+// =====================
+// Habilita los botones para ver resultados
+// =====================
 function habilitarBotonesResultados() {
-    document.getElementById('btnModalResultados').disabled = false;
-    document.getElementById('btnVerResultados').disabled = false;
-    //actualizarMensajeAdvertencia();
+  document.getElementById("btnModalResultados").disabled = false;
+  document.getElementById("btnVerResultados").disabled = false;
 }
 
-/**
- * Deshabilita los botones de resultados y muestra el mensaje de advertencia.
- */
+// =====================
+// Deshabilita los botones para ver resultados
+// =====================
 function deshabilitarBotonesResultados() {
-    document.getElementById('btnModalResultados').disabled = true;
-    document.getElementById('btnVerResultados').disabled = true;
-    //actualizarMensajeAdvertencia();
+  document.getElementById("btnModalResultados").disabled = true;
+  document.getElementById("btnVerResultados").disabled = true;
 }
 
-/**
- * Genera la simulación de llegadas y descargas, actualizando la tabla y calculando promedios.
- */
+// =====================
+// Esta función genera la simulación y actualiza la tabla principal y los costos
+// =====================
 function generarSimulacion() {
-    const min = parseInt(document.getElementById("rangoMin").value);
-    const max = parseInt(document.getElementById("rangoMax").value);
-    const dias = parseInt(document.getElementById("dias").value);
-    const tbody = document.getElementById("tablaSimulacion").querySelector("tbody");
-    tbody.innerHTML = "";
+  const min = parseInt(document.getElementById("rangoMin").value);
+  const max = parseInt(document.getElementById("rangoMax").value);
+  const dias = parseInt(document.getElementById("dias").value);
+  const tbody = document
+    .getElementById("tablaSimulacion")
+    .querySelector("tbody");
+  tbody.innerHTML = "";
 
-    let retrasosAnterior = 0;
-    let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
+  let retrasosAnterior = 0;
+  let totalRetrasos = 0,
+    totalLlegadas = 0,
+    totalDescargas = 0,
+    totalADescargarSuma = 0;
+  let totalCostoRetraso = 0,
+    totalCostoEstadia = 0,
+    totalCostoPerdida = 0;
 
-    const resultadosDiarios = [];
+  // Costos unitarios
+  const costoPorRetraso = 800;
+  const costoPorEstadia = 500;
+  const costoPorPerdida = 25000;
 
-    for (let i = 1; i <= dias; i++) {
-        const rLlegada = Math.floor(Math.random() * (max - min + 1)) + min;
-        const rDescarga = Math.floor(Math.random() * (max - min + 1)) + min;
-        const llegadas = calcularLlegadas(rLlegada);
-        const totalADescargar = retrasosAnterior + llegadas;
-        const descargas = Math.min(totalADescargar, calcularDescargas(rDescarga));
+  const resultadosDiarios = [];
 
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
+  // Simulación día a día
+  for (let i = 1; i <= dias; i++) {
+    const rLlegada = Math.floor(Math.random() * (max - min + 1)) + min;
+    const rDescarga = Math.floor(Math.random() * (max - min + 1)) + min;
+    const llegadas = calcularLlegadas(rLlegada);
+    const totalADescargar = retrasosAnterior + llegadas;
+    const descargas = Math.min(totalADescargar, calcularDescargas(rDescarga));
+
+    // Costos por día
+    const costoRetrasoDia = retrasosAnterior * costoPorRetraso;
+    const costoEstadiaDia = totalADescargar * costoPorEstadia;
+    const costoPerdidaDia =
+      retrasosAnterior > 0 ? retrasosAnterior * costoPorPerdida : 0;
+
+    // Agrega fila a la tabla visual
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
             <td>${i}</td>
-            <td contenteditable="true">${retrasosAnterior}</td>
+            <td>${retrasosAnterior}</td>
             <td>${rLlegada}</td>
             <td contenteditable="true">${llegadas}</td>
             <td>${totalADescargar}</td>
             <td contenteditable="true">${rDescarga}</td>
             <td>${descargas}</td>
+            <td class="costoRetraso">${costoRetrasoDia.toLocaleString()}</td>
+            <td class="costoEstadia">${costoEstadiaDia.toLocaleString()}</td>
+            <td class="costoPerdida">${costoPerdidaDia.toLocaleString()}</td>
             `;
-        tbody.appendChild(fila);
+    tbody.appendChild(fila);
 
-        resultadosDiarios.push({
-            dia: i,
-            retrasosDiaAnterior: retrasosAnterior,
-            numeroAleatorioLlegadas: rLlegada,
-            llegadasNocturnas: llegadas,
-            totalADescargar: totalADescargar,
-            numeroAleatorioDescargas: rDescarga,
-            descargas: descargas,
-        });
+    // Guarda los resultados de este día
+    resultadosDiarios.push({
+      dia: i,
+      retrasosDiaAnterior: retrasosAnterior,
+      numeroAleatorioLlegadas: rLlegada,
+      llegadasNocturnas: llegadas,
+      totalADescargar: totalADescargar,
+      numeroAleatorioDescargas: rDescarga,
+      descargas: descargas,
+      costoRetraso: costoRetrasoDia,
+      costoEstadia: costoEstadiaDia,
+      costoPerdida: costoPerdidaDia,
+    });
 
-        retrasosAnterior = totalADescargar - descargas;
-        totalRetrasos += retrasosAnterior;
-        totalLlegadas += llegadas;
-        totalDescargas += descargas;
-    }
-    actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, dias);
+    // Suma totales para el resumen
+    retrasosAnterior = totalADescargar - descargas;
+    totalRetrasos += retrasosAnterior;
+    totalLlegadas += llegadas;
+    totalDescargas += descargas;
+    totalADescargarSuma += totalADescargar;
+    totalCostoRetraso += costoRetrasoDia;
+    totalCostoEstadia += costoEstadiaDia;
+    totalCostoPerdida += costoPerdidaDia;
+  }
 
-    // Guardar resultados y promedios en localStorage para resultados.html
-    const promedios = {
-        promedioRetrasos: (totalRetrasos / dias).toFixed(2),
-        promedioLlegadas: (totalLlegadas / dias).toFixed(2),
-        promedioDescargas: (totalDescargas / dias).toFixed(2),
-    };
-    localStorage.setItem('resultadosSimulacion', JSON.stringify(resultadosDiarios));
-    localStorage.setItem('promediosSimulacion', JSON.stringify(promedios));
+  // Actualiza los totales en la tabla de simulación
+  actualizarTotales(
+    totalRetrasos,
+    totalLlegadas,
+    totalDescargas,
+    dias,
+    totalADescargarSuma,
+    totalCostoRetraso,
+    totalCostoEstadia,
+    totalCostoPerdida
+  );
 
-    // Calcular y guardar métricas por periodo para comparación
-    calcularPeriodosYGuardar(resultadosDiarios);
+  // ACTUALIZA LA TABLA DE COSTOS DE OPERACIÓN
+  actualizarTablaCostosOperacion(
+    totalCostoRetraso,
+    totalCostoEstadia,
+    totalCostoPerdida
+  );
 
-    // Habilitar botones y ocultar mensaje de advertencia
-    //habilitarBotonesResultados();
+  // Guarda promedios y resultados para otros usos (modal/resultados.html)
+  const promedios = {
+    promedioRetrasos: (totalRetrasos / dias).toFixed(2),
+    promedioLlegadas: (totalLlegadas / dias).toFixed(2),
+    promedioDescargas: (totalDescargas / dias).toFixed(2),
+  };
+  localStorage.setItem(
+    "resultadosSimulacion",
+    JSON.stringify(resultadosDiarios)
+  );
+  localStorage.setItem("promediosSimulacion", JSON.stringify(promedios));
 
-    observarCambios();
+  calcularPeriodosYGuardar(resultadosDiarios);
+  observarCambios();
+  calcularCostosSimulacion();
 }
 
-/**
- * Calcula el número de llegadas basado en un valor aleatorio.
- * @param {number} valor - Valor aleatorio para determinar llegadas.
- * @returns {number} Número de llegadas.
- */
+// =====================
+// Traduce número aleatorio a cantidad de llegadas según reglas del negocio
+// =====================
 function calcularLlegadas(valor) {
-    if (valor <= 13) return 0;
-    if (valor <= 30) return 1;
-    if (valor <= 45) return 2;
-    if (valor <= 70) return 3;
-    if (valor <= 90) return 4;
-    return 5;
+  if (valor <= 13) return 0;
+  if (valor <= 30) return 1;
+  if (valor <= 45) return 2;
+  if (valor <= 70) return 3;
+  if (valor <= 90) return 4;
+  return 5;
 }
 
-/**
- * Calcula el número de descargas basado en un valor aleatorio.
- * @param {number} valor - Valor aleatorio para determinar descargas.
- * @returns {number} Número de descargas.
- */
+// =====================
+// Traduce número aleatorio a cantidad de descargas según reglas del negocio
+// =====================
 function calcularDescargas(valor) {
-    if (valor <= 5) return 1;
-    if (valor <= 20) return 2;
-    if (valor <= 70) return 3;
-    if (valor <= 90) return 4;
-    return 5;
+  if (valor <= 5) return 1;
+  if (valor <= 20) return 2;
+  if (valor <= 70) return 3;
+  if (valor <= 90) return 4;
+  return 5;
 }
 
-/**
- * Actualiza los totales y promedios en la tabla y modal.
- * @param {number} retrasos - Total de retrasos.
- * @param {number} llegadas - Total de llegadas.
- * @param {number} descargas - Total de descargas.
- * @param {number} dias - Número de días simulados.
- */
-function actualizarTotales(retrasos, llegadas, descargas, dias) {
-    document.getElementById("totalRetrasos").textContent = retrasos;
-    document.getElementById("totalLlegadas").textContent = llegadas;
-    document.getElementById("totalDescargas").textContent = descargas;
-    // document.getElementById("promedioRetrasos").textContent = (retrasos / dias).toFixed(2);   esto se llena en el evento q tiene el click del boton q abre el mmodal
-    // document.getElementById("promedioLlegadas").textContent = (llegadas / dias).toFixed(2);
-    // document.getElementById("promedioDescargas").textContent = (descargas / dias).toFixed(2);
+// =====================
+// Actualiza los totales en el pie de la tabla de simulación
+// =====================
+function actualizarTotales(
+  retrasos,
+  llegadas,
+  descargas,
+  dias,
+  totalADescargarSuma = 0,
+  totalCostoRetraso = 0,
+  totalCostoEstadia = 0,
+  totalCostoPerdida = 0
+) {
+  document.getElementById("totalRetrasos").textContent = retrasos;
+  document.getElementById("totalLlegadas").textContent = llegadas;
+  document.getElementById("totalDescargas").textContent = descargas;
+  if (document.getElementById("totalADescargar"))
+    document.getElementById("totalADescargar").textContent =
+      totalADescargarSuma;
+  if (document.getElementById("totalCostoRetraso"))
+    document.getElementById("totalCostoRetraso").textContent =
+      "$" + totalCostoRetraso.toLocaleString();
+  if (document.getElementById("totalCostoEstadia"))
+    document.getElementById("totalCostoEstadia").textContent =
+      "$" + totalCostoEstadia.toLocaleString();
+  if (document.getElementById("totalCostoPerdida"))
+    document.getElementById("totalCostoPerdida").textContent =
+      "$" + totalCostoPerdida.toLocaleString();
 }
 
-/**
- * Observa cambios en las celdas editables para recalcular totales.
- */
+// =====================
+// ACTUALIZA LOS COSTOS EN LA TABLA DE COSTOS DE OPERACIÓN
+// =====================
+function actualizarTablaCostosOperacion(
+  totalCostoRetraso,
+  totalCostoEstadia,
+  totalCostoPerdida
+) {
+  // Actualiza la tabla de costos de operación alineada a la derecha (fuera del modal)
+  if (document.getElementById("costoRetraso"))
+    document.getElementById("costoRetraso").textContent =
+      "$" + totalCostoRetraso.toLocaleString();
+  if (document.getElementById("costoEstadia"))
+    document.getElementById("costoEstadia").textContent =
+      "$" + totalCostoEstadia.toLocaleString();
+  if (document.getElementById("costoPerdida"))
+    document.getElementById("costoPerdida").textContent =
+      "$" + totalCostoPerdida.toLocaleString();
+}
+
+// =====================
+// Hace que las celdas editables de la tabla propaguen cambios
+// =====================
 function observarCambios() {
-    const tbody = document.querySelector("#tablaSimulacion tbody");
-
-    tbody.querySelectorAll("td[contenteditable=true]").forEach(cell => {
-        cell.addEventListener("input", recalcular);
-        cell.addEventListener("blur", recalcular);
-        cell.addEventListener("keydown", function (e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                this.blur(); // Forzar salida para disparar evento
-            }
-        });
+  const tbody = document.querySelector("#tablaSimulacion tbody");
+  tbody.querySelectorAll("td[contenteditable=true]").forEach((cell) => {
+    const newCell = cell.cloneNode(true);
+    cell.parentNode.replaceChild(newCell, cell);
+  });
+  tbody.querySelectorAll("td[contenteditable=true]").forEach((cell) => {
+    cell.addEventListener("input", recalcularYPropagar);
+    cell.addEventListener("blur", recalcularYPropagar);
+    cell.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        this.blur();
+      }
     });
+  });
 }
 
-/**
- * Recalcula los totales y actualiza la tabla y modal.
- */
-function recalcular() {
-    const tbody = document.querySelector("#tablaSimulacion tbody");
-    let totalRetrasos = 0, totalLlegadas = 0, totalDescargas = 0;
+// =====================
+// Recalcula totales y costos si se editan celdas manualmente
+// =====================
+function recalcularYPropagar() {
+  const tbody = document.querySelector("#tablaSimulacion tbody");
+  let totalRetrasos = 0,
+    totalLlegadas = 0,
+    totalDescargas = 0,
+    totalADescargarSuma = 0;
+  let totalCostoRetraso = 0,
+    totalCostoEstadia = 0,
+    totalCostoPerdida = 0;
+  let retrasosAnterior = 0;
+  const costoPorRetraso = 800;
+  const costoPorEstadia = 500;
+  const costoPorPerdida = 25000;
 
-    Array.from(tbody.rows).forEach(row => {
+  for (let i = 0; i < tbody.rows.length; i++) {
+    const row = tbody.rows[i];
+    const prev = retrasosAnterior;
+    const lleg = parseInt(row.cells[3].innerText) || 0;
+    const rDesc = parseInt(row.cells[5].innerText) || 0;
 
-        //se convierten los textos de las celdas en numero
-        const prev  = parseInt(row.cells[1].innerText) || 0; // Retrasos día anterior
-        const lleg  = parseInt(row.cells[3].innerText) || 0; // Llegadas nocturnas
-        const rDesc = parseInt(row.cells[5].innerText) || 0; // Número aleatorio de descargas
+    row.cells[1].textContent = prev;
 
-        const total = prev + lleg; //total que hay q descargar ese dia
-        const descargas = total > 0 ? Math.min(total, calcularDescargas(rDesc)) : 0;
+    const total = prev + lleg;
+    row.cells[4].textContent = total;
 
-        row.cells[4].textContent = total;      // se pone en la celda el Total a descargar 
-        row.cells[6].textContent = descargas;  // se pone en la celda Número de descargas
+    const descargas = total > 0 ? Math.min(total, calcularDescargas(rDesc)) : 0;
+    row.cells[6].textContent = descargas;
 
+    retrasosAnterior = total - descargas;
 
-        totalRetrasos += prev;
-        totalLlegadas += lleg;
-        totalDescargas += descargas;
-    });
+    // Costos día a día
+    const costoRetrasoDia = prev * costoPorRetraso;
+    const costoEstadiaDia = total * costoPorEstadia;
+    const costoPerdidaDia = prev > 0 ? prev * costoPorPerdida : 0;
 
-    actualizarTotales(totalRetrasos, totalLlegadas, totalDescargas, tbody.rows.length);
+    row.cells[7].textContent = costoRetrasoDia.toLocaleString();
+    row.cells[8].textContent = costoEstadiaDia.toLocaleString();
+    row.cells[9].textContent = costoPerdidaDia.toLocaleString();
+
+    totalRetrasos += prev;
+    totalLlegadas += lleg;
+    totalDescargas += descargas;
+    totalADescargarSuma += total;
+    totalCostoRetraso += costoRetrasoDia;
+    totalCostoEstadia += costoEstadiaDia;
+    totalCostoPerdida += costoPerdidaDia;
+  }
+  // Actualiza los totales y la tabla de costos
+  actualizarTotales(
+    totalRetrasos,
+    totalLlegadas,
+    totalDescargas,
+    tbody.rows.length,
+    totalADescargarSuma,
+    totalCostoRetraso,
+    totalCostoEstadia,
+    totalCostoPerdida
+  );
+  actualizarTablaCostosOperacion(
+    totalCostoRetraso,
+    totalCostoEstadia,
+    totalCostoPerdida
+  );
+  calcularCostosSimulacion();
 }
 
-/**
- * Divide los resultados diarios en dos periodos y calcula métricas por periodo.
- * Guarda los datos en localStorage para su uso en resultados.html.
- */
+// =====================
+// Guarda los datos de periodos para otros análisis
+// =====================
 function calcularPeriodosYGuardar(resultadosDiarios, costoPorRetraso = 100) {
-    const totalDias = resultadosDiarios.length;
-    const mitad = Math.ceil(totalDias / 2);
+  const totalDias = resultadosDiarios.length;
+  const mitad = Math.ceil(totalDias / 2);
 
-    const periodo1 = resultadosDiarios.slice(0, mitad); //inicio, fin-1
-    const periodo2 = resultadosDiarios.slice(mitad); //de la mitad en adelante
+  const periodo1 = resultadosDiarios.slice(0, mitad);
+  const periodo2 = resultadosDiarios.slice(mitad);
 
-    function calcularMetrica(periodo) {
-        let llegadas = 0, descargas = 0, retrasos = 0;
-        periodo.forEach(dia => {
-            llegadas += dia.llegadasNocturnas;
-            descargas += dia.descargas;
-            retrasos += dia.retrasosDiaAnterior;
-        });
-        return {
-            llegadas,
-            descargas,
-            retrasos,
-            costo: retrasos * costoPorRetraso
-        };
-    }
+  function calcularMetrica(periodo) {
+    let llegadas = 0,
+      descargas = 0,
+      retrasos = 0;
+    periodo.forEach((dia) => {
+      llegadas += dia.llegadasNocturnas;
+      descargas += dia.descargas;
+      retrasos += dia.retrasosDiaAnterior;
+    });
+    return {
+      llegadas,
+      descargas,
+      retrasos,
+      costo: retrasos * costoPorRetraso,
+    };
+  }
 
-    const metrica1 = calcularMetrica(periodo1);
-    const metrica2 = calcularMetrica(periodo2);
+  const metrica1 = calcularMetrica(periodo1);
+  const metrica2 = calcularMetrica(periodo2);
 
-    localStorage.setItem('periodosSimulacion', JSON.stringify({
-        periodo1: metrica1,
-        periodo2: metrica2,
-        rango1: { inicio: 1, fin: mitad },
-        rango2: { inicio: mitad + 1, fin: totalDias }
-    }));
+  localStorage.setItem(
+    "periodosSimulacion",
+    JSON.stringify({
+      periodo1: metrica1,
+      periodo2: metrica2,
+      rango1: { inicio: 1, fin: mitad },
+      rango2: { inicio: mitad + 1, fin: totalDias },
+    })
+  );
 }
 
-// // Eventos para botones y modal
-// document.getElementById('btnGenerar').addEventListener('click', () => {
-//     generarSimulacion();
-// });
+// =====================
+// Calcula y actualiza costos para el modal de resultados
+// =====================
+function calcularCostosSimulacion() {
+  const tbody = document.querySelector("#tablaSimulacion tbody");
+  let costoRetraso = 0;
+  let costoEstadia = 0;
+  let costoPerdida = 0;
+  const costoPorRetraso = 800;
+  const costoPorEstadia = 500;
+  const costoPorPerdida = 25000;
 
-// Control del modal para mostrar resultados promedio
-document.getElementById('btnModalResultados').addEventListener('click', () => {
-    const promedios = JSON.parse(localStorage.getItem('promediosSimulacion')); //guarda un objeto con los promedios
-    if (promedios) {
-        document.getElementById('promedioRetrasos').textContent = promedios.promedioRetrasos;
-        document.getElementById('promedioLlegadas').textContent = promedios.promedioLlegadas;
-        document.getElementById('promedioDescargas').textContent = promedios.promedioDescargas;
-        const modalElement = document.getElementById('staticBackdrop');
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
-    } else {
-        // Limpiar datos numéricos si no hay simulación
-        document.getElementById('promedioRetrasos').textContent = '';
-        document.getElementById('promedioLlegadas').textContent = '';
-        document.getElementById('promedioDescargas').textContent = '';
-        alert('Por favor, genere primero la simulación para poder ver los resultados.');
-    }
+  for (let i = 0; i < tbody.rows.length; i++) {
+    const row = tbody.rows[i];
+    const retrasos = parseInt(row.cells[1].innerText) || 0;
+    const totalADescargar = parseInt(row.cells[4].innerText) || 0;
+
+    costoRetraso += retrasos * costoPorRetraso;
+    costoEstadia += totalADescargar * costoPorEstadia;
+    costoPerdida += retrasos > 0 ? retrasos * costoPorPerdida : 0;
+  }
+
+  // Actualiza los elementos del modal
+  if (document.getElementById("costoRetrasoModal")) {
+    document.getElementById("costoRetrasoModal").textContent =
+      "$" + costoRetraso.toLocaleString();
+    document.getElementById("costoEstadiaModal").textContent =
+      "$" + costoEstadia.toLocaleString();
+    document.getElementById("costoPerdidaModal").textContent =
+      "$" + costoPerdida.toLocaleString();
+  }
+}
+
+// =====================
+// Evento para mostrar el modal de resultados promedio
+// =====================
+document.getElementById("btnModalResultados").addEventListener("click", () => {
+  const promedios = JSON.parse(localStorage.getItem("promediosSimulacion"));
+  if (promedios) {
+    document.getElementById("promedioRetrasos").textContent =
+      promedios.promedioRetrasos;
+    document.getElementById("promedioLlegadas").textContent =
+      promedios.promedioLlegadas;
+    document.getElementById("promedioDescargas").textContent =
+      promedios.promedioDescargas;
+    calcularCostosSimulacion();
+    const modalElement = document.getElementById("staticBackdrop");
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+  } else {
+    document.getElementById("promedioRetrasos").textContent = "";
+    document.getElementById("promedioLlegadas").textContent = "";
+    document.getElementById("promedioDescargas").textContent = "";
+    alert(
+      "Por favor, genere primero la simulación para poder ver los resultados."
+    );
+  }
 });
 
-// Control para abrir la página de resultados solo si hay datos válidos
-document.getElementById('btnVerResultados').addEventListener('click', () => {
-    const resultados = localStorage.getItem('resultadosSimulacion');
-    const promedios = localStorage.getItem('promediosSimulacion');
-    if (resultados && promedios) {
-        window.open('resultados.html', '_blank');
-    } else {
-        alert('Por favor, genere primero la simulación para poder ver los resultados.');
-    }
+// =====================
+// Evento para ver los resultados en otra página (resultados.html)
+// =====================
+document.getElementById("btnVerResultados").addEventListener("click", () => {
+  const resultados = localStorage.getItem("resultadosSimulacion");
+  const promedios = localStorage.getItem("promediosSimulacion");
+  if (resultados && promedios) {
+    window.open("resultados.html", "_blank");
+  } else {
+    alert(
+      "Por favor, genere primero la simulación para poder ver los resultados."
+    );
+  }
 });
 
-// Inicialmente deshabilitar botones y mostrar mensaje de advertencia
+// =====================
+// Deshabilita los botones de resultados al cargar la página
+// =====================
 window.onload = () => {
-    deshabilitarBotonesResultados();
+  deshabilitarBotonesResultados();
 };
-
-// Habilitar botones y ocultar mensaje de advertencia al generar simulación
-document.getElementById('btnGenerar').addEventListener('click', () => {
-    generarSimulacion();
-    habilitarBotonesResultados();
-    const mensajeAdvertencia = document.getElementById('mensajeAdvertencia');
-    mensajeAdvertencia.style.display = 'none';
+// =====================
+// Evento para generar la simulación y habilitar botones
+// =====================
+document.getElementById("btnGenerar").addEventListener("click", () => {
+  generarSimulacion();
+  habilitarBotonesResultados();
+  const mensajeAdvertencia = document.getElementById("mensajeAdvertencia");
+  mensajeAdvertencia.style.display = "none";
 });
