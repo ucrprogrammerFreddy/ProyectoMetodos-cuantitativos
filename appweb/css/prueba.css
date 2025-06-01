@@ -47,7 +47,7 @@ button:hover {
 }
 
 td[contenteditable="true"]:focus {
-    background-color: #890000;
+    background-color: #64acb5;
 }
 
 .table-title {

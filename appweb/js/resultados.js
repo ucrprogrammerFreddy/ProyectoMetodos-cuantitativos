@@ -65,11 +65,11 @@ function obtenerDatosSimulacion() {
 
 // Calcula la distribución de llegadas nocturnas a partir de los resultados
 function calcularDistribucionLlegadas(resultados) { //resultados es un objeto con los resultados de la función anterior
-    const distribucion = [0, 0, 0, 0, 0, 0]; //de 0 a 5
+    const distribucion = [0, 0, 0, 0, 0, 0]; //de 0 a 5 (cada indice representa un numero de llegadas nocturnas, en la [0] es de cuantas veces hubo 0 llegadas...)
     resultados.forEach(dia => {
         const llegadas = dia.llegadasNocturnas;
         if (llegadas >= 0 && llegadas <= 5) {
-            distribucion[llegadas]++;
+            distribucion[llegadas]++; //contador (suma 1 en la posicion en base al numero de la llegada). el dice> sumele 1 a esa posicion
         }
     });
     return distribucion;
@@ -113,7 +113,7 @@ function inicializarGraficos() {
     const retrasosDiarios = extraerRetrasosDiarios(resultados);
     const descargasDiarias = extraerDescargasDiarias(resultados);
 
-    // Definición de costos asociados (puedes ajustar estos valores según tu modelo)
+    // Definición de costos asociados (quedan sujetos a cambio si se prefiere)
     const costoPorRetraso = 100; // Costo en USD por barcaza retrasada por día
     const costoOperacion = 50;   // Costo en USD por cada operación de descarga
     const costoFijoDiario = 200; // Costo fijo diario (personal, energía, etc.)
@@ -145,14 +145,14 @@ function inicializarGraficos() {
     // --- Gráficos ---
     // Gráfico de barras para los promedios diarios
     const ctxBar = document.getElementById('promediosBarChart').getContext('2d');
-    new Chart(ctxBar, {
+    new Chart(ctxBar, { //Crea un nuevo gráfico sobre el canvas(en html).
         type: 'bar',
         data: {
             // Eje X: Tipos de métricas
             labels: ['Retrasos', 'Llegadas', 'Descargas'],
             datasets: [{
                 label: 'Promedio Diario',
-                data: [
+                data: [ //valores de las barras
                     parseFloat(promedios.promedioRetrasos),
                     parseFloat(promedios.promedioLlegadas),
                     parseFloat(promedios.promedioDescargas),
@@ -164,7 +164,7 @@ function inicializarGraficos() {
         },
         options: {
             scales: {
-                y: { beginAtZero: true },
+                y: { beginAtZero: true }, // beginAtZero: true, hace que las barras empiecen desde 0.
             },
         },
     });
@@ -249,9 +249,9 @@ function inicializarGraficos() {
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 1,
+                    max: 1, // Límite superior: 100%
                     ticks: {
-                        callback: function(value) { return (value * 100).toFixed(0) + '%'; }
+                        callback: function(value) { return (value * 100).toFixed(0) + '%'; } // convierte 0.6 → 60%, etc.
                     }
                 }
             }
@@ -298,11 +298,12 @@ function inicializarGraficos() {
 
 // Mostrar comparación de periodos en gráfico de barras
 function mostrarComparacionPeriodos() {
+    //preparamos los datos 
     const periodos = JSON.parse(localStorage.getItem('periodosSimulacion') || '{}');
     if (!periodos.periodo1 || !periodos.periodo2) return;
 
     const labels = ['Llegadas', 'Descargas', 'Retrasos', 'Costos'];
-    const data1 = [
+    const data1 = [ // creacion de arreglos 
         periodos.periodo1.llegadas,
         periodos.periodo1.descargas,
         periodos.periodo1.retrasos,
@@ -315,6 +316,7 @@ function mostrarComparacionPeriodos() {
         periodos.periodo2.costo
     ];
 
+    //creacion del grafico
     const ctx = document.getElementById('comparacionPeriodosChart').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
@@ -354,19 +356,19 @@ function mostrarComparacionPeriodos() {
 function setupScrollAnimation() {
     const charts = document.querySelectorAll('.chart-container');
 
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
+    const observer = new IntersectionObserver(entries => { //detecta cuándo un elemento entra en la vista del usuario (cuando hacemos scroll).
+        entries.forEach(entry => { //Esto asigna el observador a cada uno de los elementos .chart-container.
+            if (entry.isIntersecting) { //¿Está siendo visible en pantalla?
+                entry.target.classList.add('visible'); //le agrega la clase visible al gráfico para que se anime o se muestre.
+                observer.unobserve(entry.target); //Deja de observar ese gráfico después de que ya apareció para no repetir la animacion.
             }
         });
     }, {
-        threshold: 0.1
+        threshold: 0.1  //Ejecuta la función de observación cuando al menos el 10% del elemento esté visible en pantalla
     });
 
     charts.forEach(chart => {
-        observer.observe(chart);
+        observer.observe(chart); //le dice al navegador QUÉ elementos observar
     });
 }
 
