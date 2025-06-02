@@ -215,14 +215,14 @@ function actualizarTotales(
 }
 
 // =====================
-// ACTUALIZA LOS COSTOS EN LA TABLA DE COSTOS DE OPERACIÓN
+// ACTUALIZA LOS COSTOS EN LA TABLA DE COSTOS DE OPERACIÓN (fuera y dentro del modal)
 // =====================
 function actualizarTablaCostosOperacion(
   totalCostoRetraso,
   totalCostoEstadia,
   totalCostoPerdida
 ) {
-  // Actualiza la tabla de costos de operación alineada a la derecha (fuera del modal)
+  // Tabla fuera del modal
   if (document.getElementById("costoRetraso"))
     document.getElementById("costoRetraso").textContent =
       "$" + totalCostoRetraso.toLocaleString();
@@ -232,6 +232,33 @@ function actualizarTablaCostosOperacion(
   if (document.getElementById("costoPerdida"))
     document.getElementById("costoPerdida").textContent =
       "$" + totalCostoPerdida.toLocaleString();
+  if (document.getElementById("costoTotalOperacion"))
+    document.getElementById("costoTotalOperacion").textContent =
+      "$" +
+      (
+        totalCostoRetraso +
+        totalCostoEstadia +
+        totalCostoPerdida
+      ).toLocaleString();
+
+  // También para el modal (si existe)
+  if (document.getElementById("costoRetrasoModal"))
+    document.getElementById("costoRetrasoModal").textContent =
+      "$" + totalCostoRetraso.toLocaleString();
+  if (document.getElementById("costoEstadiaModal"))
+    document.getElementById("costoEstadiaModal").textContent =
+      "$" + totalCostoEstadia.toLocaleString();
+  if (document.getElementById("costoPerdidaModal"))
+    document.getElementById("costoPerdidaModal").textContent =
+      "$" + totalCostoPerdida.toLocaleString();
+  if (document.getElementById("costoTotalOperacionModal"))
+    document.getElementById("costoTotalOperacionModal").textContent =
+      "$" +
+      (
+        totalCostoRetraso +
+        totalCostoEstadia +
+        totalCostoPerdida
+      ).toLocaleString();
 }
 
 // =====================
@@ -387,7 +414,7 @@ function calcularCostosSimulacion() {
     costoPerdida += retrasos > 0 ? retrasos * costoPorPerdida : 0;
   }
 
-  // Actualiza los elementos del modal
+  // Actualiza los elementos del modal (incluido el total)
   if (document.getElementById("costoRetrasoModal")) {
     document.getElementById("costoRetrasoModal").textContent =
       "$" + costoRetraso.toLocaleString();
@@ -395,6 +422,9 @@ function calcularCostosSimulacion() {
       "$" + costoEstadia.toLocaleString();
     document.getElementById("costoPerdidaModal").textContent =
       "$" + costoPerdida.toLocaleString();
+    if (document.getElementById("costoTotalOperacionModal"))
+      document.getElementById("costoTotalOperacionModal").textContent =
+        "$" + (costoRetraso + costoEstadia + costoPerdida).toLocaleString();
   }
 }
 

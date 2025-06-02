@@ -53,7 +53,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Más espacio horizontal */
         @media (min-width: 768px) {
             .container-fluid {
                 max-width: 98vw;
@@ -81,22 +80,18 @@
                         <div class="card-body">
                             <h2 class="titulo h4 mb-3">Rango para números aleatorios</h2>
                             <form class="row g-3 align-items-end">
-                                <!-- Campo para el valor mínimo -->
                                 <div class="col-12 col-md-3">
                                     <label for="rangoMin" class="form-label">Mín:</label>
                                     <input type="number" class="form-control" id="rangoMin" value="1">
                                 </div>
-                                <!-- Campo para el valor máximo -->
                                 <div class="col-12 col-md-3">
                                     <label for="rangoMax" class="form-label">Máx:</label>
                                     <input type="number" class="form-control" id="rangoMax" value="100">
                                 </div>
-                                <!-- Campo para la cantidad de días a simular -->
                                 <div class="col-12 col-md-3">
                                     <label for="dias" class="form-label">Cantidad de días:</label>
                                     <input type="number" class="form-control" id="dias" value="15">
                                 </div>
-                                <!-- Botón para generar la simulación -->
                                 <div class="col-12 col-md-3 d-grid">
                                     <button type="button" class="btn btn-primary" id="btnGenerar">
                                         Generar simulación
@@ -113,7 +108,6 @@
                         <div class="card-body">
                             <h2 class="titulo h4 mb-3">Tabla de simulación</h2>
                             <div class="table-responsive">
-                                <!-- Tabla principal de la simulación -->
                                 <table id="tablaSimulacion"
                                     class="table table-bordered table-striped mx-auto mb-0 align-middle">
                                     <thead class="table-dark">
@@ -148,7 +142,7 @@
                                 </table>
                             </div>
                             <!-- TABLA DE COSTOS DE OPERACIÓN alineada a la derecha -->
-                            <div class="row justify-content-end mt-4">
+                            <div class="row justify-content-center mt-4">
                                 <div class="col-auto">
                                     <div class="d-flex flex-column align-items-center">
                                         <h5 class="mb-0 fw-bold">Costos de operación</h5>
@@ -175,6 +169,10 @@
                                                 <tr>
                                                     <td>Costo por barcaza perdida</td>
                                                     <td id="costoPerdida">$0</td>
+                                                </tr>
+                                                <tr style="font-weight:bold; background:#e3eafc;">
+                                                    <td>Total</td>
+                                                    <td id="costoTotalOperacion" style="font-weight:bold">$0</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -404,6 +402,10 @@
                                         <tr>
                                             <td>Costo por barcaza perdida</td>
                                             <td id="costoPerdidaModal">$0</td>
+                                        </tr>
+                                        <tr style="font-weight:bold; background:#e3eafc;">
+                                            <td>Total</td>
+                                            <td id="costoTotalOperacionModal" style="font-weight:bold">$0</td>
                                         </tr>
                                     </tbody>
                                 </table>
