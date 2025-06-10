@@ -207,8 +207,30 @@ function inicializarGraficos() {
       ],
     },
     options: {
+      plugins: {
+        title: {
+          display: true,
+          text: "Promedios Diarios de Retrasos, Llegadas y Descargas",
+          font: { size: 18 }
+        },
+        legend: { display: true }
+      },
       scales: {
-        y: { beginAtZero: true },
+        x: {
+          title: {
+            display: true,
+            text: "Categoría",
+            font: { size: 15 }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Cantidad Promedio",
+            font: { size: 15 }
+          }
+        }
       },
     },
   });
@@ -231,8 +253,31 @@ function inicializarGraficos() {
       ],
     },
     options: {
+      plugins: {
+        title: {
+          display: true,
+          text: "Distribución de Llegadas Nocturnas",
+          font: { size: 18 }
+        },
+        legend: { display: true }
+      },
       scales: {
-        y: { beginAtZero: true, stepSize: 1 },
+        x: {
+          title: {
+            display: true,
+            text: "Cantidad de Llegadas Nocturnas",
+            font: { size: 15 }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          stepSize: 1,
+          title: {
+            display: true,
+            text: "Frecuencia (días)",
+            font: { size: 15 }
+          }
+        }
       },
     },
   });
@@ -252,6 +297,33 @@ function inicializarGraficos() {
           tension: 0.1,
         },
       ],
+    },
+    options: {
+      plugins: {
+        title: {
+          display: true,
+          text: "Retrasos Diarios",
+          font: { size: 18 }
+        },
+        legend: { display: true }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Día",
+            font: { size: 15 }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Cantidad de Barcazas Retrasadas",
+            font: { size: 15 }
+          }
+        }
+      },
     },
   });
 
@@ -274,8 +346,30 @@ function inicializarGraficos() {
       ],
     },
     options: {
+      plugins: {
+        title: {
+          display: true,
+          text: "Descargas Diarias",
+          font: { size: 18 }
+        },
+        legend: { display: true }
+      },
       scales: {
-        y: { beginAtZero: true },
+        x: {
+          title: {
+            display: true,
+            text: "Día",
+            font: { size: 15 }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Cantidad de Barcazas Descargadas",
+            font: { size: 15 }
+          }
+        }
       },
     },
   });
@@ -302,10 +396,30 @@ function inicializarGraficos() {
       ],
     },
     options: {
+      plugins: {
+        title: {
+          display: true,
+          text: "Utilización del Servidor Diaria",
+          font: { size: 18 }
+        },
+        legend: { display: true }
+      },
       scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Día",
+            font: { size: 15 }
+          }
+        },
         y: {
           beginAtZero: true,
           max: 1,
+          title: {
+            display: true,
+            text: "Porcentaje de Utilización",
+            font: { size: 15 }
+          },
           ticks: {
             callback: function (value) {
               return (value * 100).toFixed(0) + "%";
@@ -349,8 +463,30 @@ function inicializarGraficos() {
       ],
     },
     options: {
+      plugins: {
+        title: {
+          display: true,
+          text: "Tiempos Promedio en Cola y en el Sistema",
+          font: { size: 18 }
+        },
+        legend: { display: true }
+      },
       scales: {
-        y: { beginAtZero: true },
+        x: {
+          title: {
+            display: true,
+            text: "Día",
+            font: { size: 15 }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Tiempo (días)",
+            font: { size: 15 }
+          }
+        }
       },
     },
   });
