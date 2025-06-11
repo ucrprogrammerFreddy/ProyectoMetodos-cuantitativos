@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Control - Barcazas y Logística</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap y estilos principales -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/appweb/css/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="bg-light">
+  <div class="container-fluid">
+    <div class="row flex-nowrap min-vh-100">
+      <!-- Sidebar lateral con navegación y acciones -->
+      <nav class="col-auto col-md-3 col-xl-2 sidebar">
+        <div class="sidebar-logo mb-4 w-100 text-center">
+          <!-- Logo y nombre del sistema -->
+          <img src="/appweb/img/logoPuerto.png" alt="Barcazas" class="logo-img mb-2">
+          <span class="fs-4 fw-bold text-info">Barcazas</span>
+        </div>
+        <!-- Menú de navegación -->
+        <ul class="nav nav-pills flex-column mb-auto w-100">
+          <li class="nav-item w-100">
+            <button class="nav-link active w-100 text-start"
+              onclick="window.location.href='/appweb/html/dashboard.html'">
+              <i class="fas fa-chart-pie me-2"></i> Dashboard
+            </button>
+          </li>
+          <li class="nav-item w-100">
+            <button class="nav-link w-100 text-start"
+              onclick="window.open('/appweb/html/resultados.html', '_blank')">
+              <i class="fas fa-table me-2"></i> Resultados
+            </button>
+          </li>
+          <li class="nav-item w-100">
+            <button class="nav-link w-100 text-start"
+              onclick="window.open('/appweb/html/prueba.html', '_blank')">
+              <i class="fas fa-cogs me-2"></i> Prueba
+            </button>
+          </li>
+        </ul>
+        <!-- Botones de acción y marca -->
+        <div class="mt-auto w-100 text-center pt-4">
+          <span class="sidebar-watermark text-info d-block mb-3">Simulación</span>
+          <div class="d-flex flex-column align-items-center gap-2 px-2">
+            <!-- Botón para exportar PDF -->
+            <button onclick="exportarPDF()" class="btn btn-info btn-export-pdf-sidebar w-100 mb-2"
+              aria-label="Exportar resumen a PDF">
+              <i class="fas fa-file-pdf"></i>
+              <span class="d-none d-xl-inline ms-1">Exportar PDF</span>
+            </button>
+            <!-- Botón para alternar modo oscuro -->
+            <button id="toggle-darkmode" class="btn btn-dark btn-darkmode-sidebar w-100"
+              aria-label="Alternar modo oscuro">
+              <i class="fas fa-moon"></i>
+              <span class="d-none d-xl-inline ms-1">Modo Oscuro</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+      <!-- Contenido principal del dashboard -->
+      <main class="col py-4 px-4 main-content">
+        <div class="container-fluid">
+          <!-- Encabezado del dashboard -->
+          <header class="dashboard-header mb-4">
+            <div class="d-flex flex-column align-items-center justify-content-center">
+              <h1 class="display-5 fw-bold dashboard-title">
+                <i class="fas fa-ship me-2"></i>
+                Panel de Control - Barcazas y Logística
+              </h1>
+              <!-- Aquí se muestra el nombre de la empresa (se llena por JS) -->
+              <div class="empresa-nombre" id="empresaNombre"></div>
+            </div>
+          </header>
+          <!-- Tarjetas de KPIs principales -->
+          <div class="row g-3 justify-content-center mb-4 summary-cards">
+            <div class="col-6 col-sm-4 col-md-2">
+              <div class="card h-100 text-center">
+                <h2 class="mb-2"><i class="fas fa-clock"></i></h2>
+                <div class="small text-muted">Promedio Retrasos</div>
+                <p id="promedioRetrasos" class="card-value">-</p>
+              </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-2">
+              <div class="card h-100 text-center">
+                <h2 class="mb-2"><i class="fas fa-ship"></i></h2>
+                <div class="small text-muted">Promedio Llegadas</div>
+                <p id="promedioLlegadas" class="card-value">-</p>
+              </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-2">
+              <div class="card h-100 text-center">
+                <h2 class="mb-2"><i class="fas fa-arrow-down"></i></h2>
+                <div class="small text-muted">Promedio Descargas</div>
+                <p id="promedioDescargas" class="card-value">-</p>
+              </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-2">
+              <div class="card card-warning h-100 text-center">
+                <h2 class="mb-2"><i class="fas fa-exclamation-triangle"></i></h2>
+                <div class="small text-muted">Barcazas Perdidas</div>
+                <p id="totalPerdidas" class="card-value">-</p>
+              </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-2">
+              <div class="card card-accent h-100 text-center">
+                <h2 class="mb-2"><i class="fas fa-dollar-sign"></i></h2>
+                <div class="small text-muted">Costo Total</div>
+                <p id="costoGlobal" class="card-value">-</p>
+              </div>
+            </div>
+          </div>
+          <!-- Gráficos principales en 2x2 -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-md-6">
+              <div class="chart-container chart-ocean h-100 mb-4">
+                <div class="fw-bold mb-2 text-info"><i class="fas fa-chart-bar"></i> Promedios Diarios</div>
+                <canvas id="barChart"></canvas>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="chart-container chart-sand h-100 mb-4">
+                <div class="fw-bold mb-2 text-warning"><i class="fas fa-chart-pie"></i> Llegadas Nocturnas</div>
+                <canvas id="pieChart"></canvas>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="chart-container chart-sky h-100">
+                <div class="fw-bold mb-2 text-primary"><i class="fas fa-chart-line"></i> Retrasos Diarios</div>
+                <canvas id="retrasosChart"></canvas>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="chart-container chart-util h-100">
+                <div class="fw-bold mb-2 text-success"><i class="fas fa-percent"></i> Utilización Servidor</div>
+                <canvas id="utilizacionChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <!-- Riesgos y Recomendación -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-6">
+              <div class="card card-risk h-100">
+                <h2 class="mb-2"><i class="fas fa-bolt"></i> Riesgos Detectados</h2>
+                <ul id="riesgosDetectados" class="riesgos-list"></ul>
+              </div>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="card card-decision h-100">
+                <h2 class="mb-2"><i class="fas fa-lightbulb"></i> Recomendación Final</h2>
+                <div id="mejorDecision" class="decision-text">-</div>
+              </div>
+            </div>
+          </div>
+          <!-- Resumen Ejecutivo y Sugerencias -->
+          <div class="row g-4">
+            <div class="col-12 col-lg-6">
+              <div class="extra-block h-100">
+                <h2><i class="fas fa-info-circle"></i> Resumen Ejecutivo</h2>
+                <div id="resumenEjecutivo" class="resumen-ejecutivo"></div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="extra-block h-100">
+                <h2><i class="fas fa-lightbulb"></i> Sugerencias de Mejora</h2>
+                <ul id="sugerenciasMejora" class="sugerencias-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <!-- Scripts principales -->
+  <script src="/appweb/js/dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

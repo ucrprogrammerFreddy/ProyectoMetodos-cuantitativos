@@ -1,0 +1,459 @@
+/* --- Estilos generales y fondo --- */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 60%, #f4f6fa 100%);
+  color: #222;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* --- Sidebar principal --- */
+.sidebar {
+  /* Menú lateral fijo y estilizado */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 100vh;
+  z-index: 20;
+  width: 220px;
+  background: linear-gradient(180deg, #1a2636 80%, #4fd1c5 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 0;
+  margin-left: 0;
+  border-radius: 24px;
+  box-shadow: 2px 0 16px 0 rgba(34,46,58,0.10);
+  padding: 1.2rem 0 1.2rem 1rem;
+  gap: 0;
+}
+.sidebar-logo img.logo-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 6px;
+  box-shadow: 0 2px 8px #4fd1c5aa;
+}
+.sidebar-logo span {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #4fd1c5;
+  text-shadow: 0 2px 8px #222e3a44;
+  margin-top: 0.2rem;
+  font-family: 'Segoe UI Semibold', Arial, sans-serif;
+}
+.sidebar-watermark {
+  font-size: 1.02rem;
+  color: #4fd1c5;
+  letter-spacing: 1px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  opacity: 0.85;
+}
+
+/* --- Botones PDF y Modo Oscuro en sidebar --- */
+.btn-export-pdf-sidebar {
+  background: linear-gradient(90deg, #4fd1c5 60%, #36a2eb 100%);
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #4fd1c544;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.btn-export-pdf-sidebar:hover, .btn-export-pdf-sidebar:focus {
+  background: linear-gradient(90deg, #36a2eb 60%, #4fd1c5 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px #36a2eb44;
+}
+.btn-darkmode-sidebar {
+  background: linear-gradient(90deg, #232b36 60%, #4fd1c5 100%);
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #232b3644;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.btn-darkmode-sidebar:hover, .btn-darkmode-sidebar:focus {
+  background: linear-gradient(90deg, #4fd1c5 60%, #232b36 100%);
+  color: #232b36;
+  box-shadow: 0 4px 16px #4fd1c544;
+}
+@media (max-width: 1200px) {
+  .btn-export-pdf-sidebar span,
+  .btn-darkmode-sidebar span {
+    display: none !important;
+  }
+  .btn-export-pdf-sidebar, .btn-darkmode-sidebar {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+    font-size: 1.15rem;
+  }
+}
+
+/* --- Encabezado y título principal --- */
+.dashboard-header .display-5,
+.dashboard-title {
+  text-align: center !important;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  font-size: 2.2rem;
+  background: linear-gradient(90deg, #00796b, #4fd1c5);
+  color: #fff;
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center !important;
+  gap: 0.7rem;
+  text-shadow: none;
+  font-family: 'Segoe UI Semibold', Arial, sans-serif;
+}
+.empresa-nombre {
+  font-size: 1.1rem;
+  color: #4fd1c5;
+  font-weight: 500;
+  background: #e0f7fa;
+  padding: 0.4rem 1.2rem;
+  border-radius: 20px;
+  box-shadow: 0 1px 4px rgba(79,209,197,0.08);
+}
+
+/* --- KPIs y tarjetas principales --- */
+.summary-cards .card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  text-align: center;
+  min-width: 170px;
+  margin: 0.8rem 0;
+  transition: transform 0.2s ease, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  color: #232b36;
+}
+.summary-cards .card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+  z-index: 2;
+}
+.card-accent {
+  border-left: 6px solid #4fd1c5;
+  background: linear-gradient(90deg, #e0f7fa 60%, #fff 100%);
+}
+.card-warning {
+  border-left: 6px solid #fbbf24;
+  background: linear-gradient(90deg, #fffbe6 60%, #fff 100%);
+}
+.card-risk {
+  border-left: 6px solid #d9534f;
+  background: linear-gradient(90deg, #ffeaea 60%, #fff 100%);
+}
+.card-decision {
+  border-left: 6px solid #36a2eb;
+  background: linear-gradient(90deg, #e3f2fd 60%, #fff 100%);
+  box-shadow: 0 2px 12px rgba(54,162,235,0.07);
+  position: relative;
+}
+.card h2 {
+  font-size: 1rem;
+  color: #4fd1c5;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.card-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #232b36;
+  font-family: 'Segoe UI Bold', Arial, sans-serif;
+  letter-spacing: 0.5px;
+}
+.decision-text {
+  font-size: 1.18rem;
+  color: #1a2636;
+  font-weight: 600;
+  margin-top: 0.7rem;
+  margin-bottom: 0.7rem;
+  padding: 0.7rem 1.1rem;
+  border-left: 4px solid #36a2eb;
+  background: #f0f8ff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px #36a2eb22;
+  transition: background 0.2s;
+}
+.card-decision h2 {
+  color: #36a2eb;
+  font-weight: 700;
+  font-size: 1.13rem;
+  letter-spacing: 0.5px;
+}
+
+/* --- Gráficos principales --- */
+.chart-container {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+  padding: 1.5rem;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  color: #232b36;
+}
+.chart-ocean {
+  border-top: 5px solid #4fd1c5;
+  background: linear-gradient(180deg, #e0f7fa 60%, #fff 100%);
+}
+.chart-sand {
+  border-top: 5px solid #fbbf24;
+  background: linear-gradient(180deg, #fffbe6 60%, #fff 100%);
+}
+.chart-sky {
+  border-top: 5px solid #36a2eb;
+  background: linear-gradient(180deg, #e3f2fd 60%, #fff 100%);
+}
+.chart-util {
+  border-top: 5px solid #a3e635;
+  background: linear-gradient(180deg, #f0fdf4 60%, #fff 100%);
+}
+
+/* --- Bloques extra: resumen y sugerencias --- */
+.extra-block {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+  padding: 1.5rem 1.5rem 1.2rem 1.5rem;
+  min-height: 180px;
+  color: #232b36;
+}
+.extra-block h2 {
+  font-size: 1.15rem;
+  color: #4fd1c5;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.resumen-ejecutivo {
+  font-size: 1.13rem;
+  color: #1a2636;
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 1rem 1.3rem;
+  margin-bottom: 0.5rem;
+  border-left: 4px solid #4fd1c5;
+  box-shadow: 0 1px 4px #4fd1c522;
+  font-weight: 500;
+  line-height: 1.7;
+}
+.sugerencias-list {
+  margin: 0; padding-left: 1.2rem;
+  color: #1a2636;
+  font-size: 1.08rem;
+  list-style: disc inside;
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 1rem 1.3rem;
+  border-left: 4px solid #a3e635;
+  box-shadow: 0 1px 4px #a3e63522;
+  font-weight: 500;
+}
+.sugerencias-list li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.2rem;
+}
+
+/* --- Otros estilos útiles --- */
+.no-data-msg {
+  color: #888;
+  text-align: center;
+  font-size: 1.1rem;
+  padding: 2.5rem 0;
+}
+
+/* --- Responsive y ajustes --- */
+@media (max-width: 1200px) {
+  .btn-export-pdf-sidebar span,
+  .btn-darkmode-sidebar span {
+    display: none !important;
+  }
+  .btn-export-pdf-sidebar, .btn-darkmode-sidebar {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+    font-size: 1.15rem;
+  }
+}
+@media (max-width: 900px) {
+  .sidebar-logo span { font-size: 1rem; }
+  .empresa-nombre { font-size: 0.9rem; }
+  .dashboard-header h1 { font-size: 1.3rem; }
+  .main-content, main.col { padding: 0.5rem; }
+  .summary-cards .card { min-width: 140px; }
+}
+@media (max-width: 600px) {
+  .main-content, main.col { padding: 0.2rem; }
+  .dashboard-header h1 { font-size: 1.1rem; }
+}
+@media (min-width: 768px) {
+  .chart-container {
+    min-height: 320px;
+    margin-bottom: 0 !important;
+  }
+}
+@media (max-width: 767px) {
+  .chart-container {
+    min-height: 220px;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* --- Modo oscuro --- */
+body.darkmode {
+  background: linear-gradient(135deg, #232b36 0%, #1a2636 100%);
+  color: #e0f7fa;
+}
+body.darkmode .main-content,
+body.darkmode main.col {
+  background: rgba(34,46,58,0.97);
+  color: #e0f7fa;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(34,46,58,0.18);
+}
+body.darkmode .card,
+body.darkmode .extra-block,
+body.darkmode .chart-container {
+  background: #232b36;
+  color: #e0f7fa;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  border-left-color: #4fd1c5 !important;
+}
+body.darkmode .card-accent {
+  background: linear-gradient(90deg, #1a2636 60%, #232b36 100%);
+  border-left: 6px solid #4fd1c5;
+}
+body.darkmode .card-warning {
+  background: linear-gradient(90deg, #3a2f1a 60%, #232b36 100%);
+  border-left: 6px solid #fbbf24;
+}
+body.darkmode .card-risk {
+  background: linear-gradient(90deg, #3a1a1a 60%, #232b36 100%);
+  border-left: 6px solid #d9534f;
+}
+body.darkmode .card-decision {
+  background: linear-gradient(90deg, #1a2636 60%, #232b36 100%);
+  border-left: 6px solid #36a2eb;
+}
+body.darkmode .empresa-nombre {
+  background: #232b36;
+  color: #4fd1c5 !important;
+  border: 1px solid #4fd1c5;
+  box-shadow: 0 1px 4px rgba(79,209,197,0.13);
+}
+body.darkmode .btn-export-pdf-sidebar {
+  background: linear-gradient(90deg, #232b36 60%, #36a2eb 100%);
+  color: #4fd1c5;
+  border: 1px solid #4fd1c5;
+}
+body.darkmode .btn-export-pdf-sidebar:hover, body.darkmode .btn-export-pdf-sidebar:focus {
+  background: linear-gradient(90deg, #36a2eb 60%, #232b36 100%);
+  color: #fff;
+}
+body.darkmode .btn-darkmode-sidebar {
+  background: linear-gradient(90deg, #4fd1c5 60%, #232b36 100%);
+  color: #232b36;
+  border: 1px solid #4fd1c5;
+}
+body.darkmode .btn-darkmode-sidebar:hover, body.darkmode .btn-darkmode-sidebar:focus {
+  background: linear-gradient(90deg, #232b36 60%, #4fd1c5 100%);
+  color: #4fd1c5;
+}
+body.darkmode .sidebar-watermark {
+  color: #b2dfdb;
+}
+body.darkmode .no-data-msg {
+  color: #b2dfdb;
+}
+body.darkmode .riesgos-list {
+  color: #f87171;
+}
+body.darkmode .resumen-ejecutivo {
+  background: #232b36;
+  color: #e0f7fa;
+  border-left: 4px solid #4fd1c5;
+  box-shadow: 0 1px 4px #4fd1c544;
+}
+body.darkmode .sugerencias-list {
+  background: #232b36;
+  color: #e0f7fa;
+  border-left: 4px solid #a3e635;
+  box-shadow: 0 1px 4px #a3e63544;
+}
+body.darkmode .sugerencias-list li {
+  color: #d4ffb2;
+}
+body.darkmode .dashboard-header h1,
+body.darkmode .dashboard-title {
+  color: #4fd1c5;
+  text-shadow: 0 2px 8px #1a2636;
+}
+body.darkmode .card-value,
+body.darkmode .card .card-value,
+body.darkmode .card .decision-text {
+  color: #e0f7fa !important;
+  text-shadow: none;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+body.darkmode .card h2,
+body.darkmode .card .small,
+body.darkmode .extra-block h2 {
+  color: #4fd1c5 !important;
+}
+body.darkmode .card-risk,
+body.darkmode .card-decision,
+body.darkmode .extra-block,
+body.darkmode .chart-container {
+  color: #e0f7fa !important;
+}
+body.darkmode .card .small.text-muted {
+  color: #b2dfdb !important;
+}
+body.darkmode .summary-cards .card {
+  color: #e0f7fa !important;
+}
+
+/* --- Fin de estilos --- */
