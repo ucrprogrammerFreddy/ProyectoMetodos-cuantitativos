@@ -115,7 +115,7 @@ canvas {
   color: white;
 }
 
-/* Botón profesional para regresar a simulación */
+/* Botón  para regresar a simulación */
 .btn-simulacion {
   background: linear-gradient(90deg, #00796b 60%, #4fd1c5 100%);
   color: #fff;
@@ -138,7 +138,7 @@ canvas {
   text-decoration: none;
 }
 
-/* Botón profesional para ver dashboard */
+/* Botón  para ver dashboard */
 .btn-dashboard {
   background: linear-gradient(90deg, #36a2eb 60%, #4fd1c5 100%);
   color: #fff;
