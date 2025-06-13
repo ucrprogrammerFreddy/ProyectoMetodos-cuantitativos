@@ -1,5 +1,5 @@
 // =====================
-// Elimina una fila de una tabla (usado en tablas de probabilidades)
+// Elimina una fila de una tabla de probabilidades
 // =====================
 function eliminarFila(btn) {
   const fila = btn.parentNode.parentNode;
@@ -78,7 +78,7 @@ function generarSimulacion() {
     const totalADescargar = retrasosAnterior + llegadas;
     const descargas = Math.min(totalADescargar, calcularDescargas(rDescarga));
 
-    // Costos por día
+    // Cálculo de costos por día
     const costoRetrasoDia = retrasosAnterior * costoPorRetraso;
     const costoEstadiaDia = totalADescargar * costoPorEstadia;
     const costoPerdidaDia =
@@ -137,7 +137,7 @@ function generarSimulacion() {
     totalCostoPerdida
   );
 
-  // ACTUALIZA LA TABLA DE COSTOS DE OPERACIÓN
+  // Actualiza la tabla de costos de operación
   actualizarTablaCostosOperacion(
     totalCostoRetraso,
     totalCostoEstadia,
@@ -222,7 +222,6 @@ function actualizarTablaCostosOperacion(
   totalCostoEstadia,
   totalCostoPerdida
 ) {
-  // Tabla fuera del modal
   if (document.getElementById("costoRetraso"))
     document.getElementById("costoRetraso").textContent =
       "$" + totalCostoRetraso.toLocaleString();
@@ -299,6 +298,9 @@ function recalcularYPropagar() {
   const costoPorEstadia = 500;
   const costoPorPerdida = 25000;
 
+  // Array para reconstruir los resultados diarios editados
+  const resultadosDiarios = [];
+
   for (let i = 0; i < tbody.rows.length; i++) {
     const row = tbody.rows[i];
     const prev = retrasosAnterior;
@@ -331,6 +333,20 @@ function recalcularYPropagar() {
     totalCostoRetraso += costoRetrasoDia;
     totalCostoEstadia += costoEstadiaDia;
     totalCostoPerdida += costoPerdidaDia;
+
+    // Reconstruir el objeto de resultados diarios editados
+    resultadosDiarios.push({
+      dia: i + 1,
+      retrasosDiaAnterior: prev,
+      numeroAleatorioLlegadas: parseInt(row.cells[2].innerText) || 0,
+      llegadasNocturnas: lleg,
+      totalADescargar: total,
+      numeroAleatorioDescargas: rDesc,
+      descargas: descargas,
+      costoRetraso: costoRetrasoDia,
+      costoEstadia: costoEstadiaDia,
+      costoPerdida: costoPerdidaDia,
+    });
   }
   // Actualiza los totales y la tabla de costos
   actualizarTotales(
@@ -349,6 +365,22 @@ function recalcularYPropagar() {
     totalCostoPerdida
   );
   calcularCostosSimulacion();
+
+  // Actualiza localStorage con los datos editados
+  const dias = tbody.rows.length;
+  const promedios = {
+    promedioRetrasos: dias ? (totalRetrasos / dias).toFixed(2) : "0.00",
+    promedioLlegadas: dias ? (totalLlegadas / dias).toFixed(2) : "0.00",
+    promedioDescargas: dias ? (totalDescargas / dias).toFixed(2) : "0.00",
+  };
+  localStorage.setItem("resultadosSimulacion", JSON.stringify(resultadosDiarios));
+  localStorage.setItem("promediosSimulacion", JSON.stringify(promedios));
+  calcularPeriodosYGuardar(resultadosDiarios);
+
+  // Dispara manualmente el evento storage para la misma pestaña (para pruebas locales)
+  window.dispatchEvent(new StorageEvent("storage", {key: "resultadosSimulacion"}));
+  window.dispatchEvent(new StorageEvent("storage", {key: "promediosSimulacion"}));
+  window.dispatchEvent(new StorageEvent("storage", {key: "periodosSimulacion"}));
 }
 
 // =====================

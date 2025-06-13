@@ -7,7 +7,7 @@ function getSimData() {
   return { resultados, promedios, periodos, nombreEmpresa };
 }
 
-// Evento para alternar modo oscuro
+// Evento para alternar modo oscuro en el dashboard
 document.addEventListener("DOMContentLoaded", function() {
   const darkBtn = document.getElementById('toggle-darkmode');
   if (darkBtn) {
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
-// Muestra los valores clave en las tarjetas principales
+// Muestra los valores clave en las tarjetas principales del dashboard
 function mostrarResumen() {
   const { promedios, resultados, nombreEmpresa } = getSimData();
   // Muestra el nombre de la empresa si existe
@@ -89,7 +89,8 @@ function mostrarRiesgos() {
 
 // Renderiza los gráficos principales del dashboard
 function mostrarGraficos() {
-  const { resultados, promedios } = getSimData();
+  const { resultados, promedios, periodos } = getSimData();
+  const totalDias = resultados.length;
   // Limpia los gráficos antes de renderizar
   ['barChart', 'pieChart', 'retrasosChart', 'utilizacionChart'].forEach(id => {
     const canvas = document.getElementById(id);
@@ -126,48 +127,78 @@ function mostrarGraficos() {
       responsive: true,
       plugins: {
         legend: { display: false },
-        title: { display: true, text: 'Promedios Diarios' }
+        title: { display: true, text: 'Promedios Diarios de Retrasos, Llegadas y Descargas' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${ctx.parsed.y}`
+          }
+        }
       },
       scales: {
-        x: { title: { display: true, text: 'Categoría' } },
-        y: { beginAtZero: true, title: { display: true, text: 'Cantidad Promedio' } }
+        x: { 
+          title: { display: true, text: 'Categoría (Tipo de Métrica)' }
+        },
+        y: { 
+          beginAtZero: true, 
+          title: { display: true, text: 'Valor Promedio por Día' },
+          ticks: {
+            precision: 2
+          }
+        }
       }
     }
   });
 
-  // Gráfico de pastel: Llegadas nocturnas
-  const llegadas = [0, 0, 0, 0, 0, 0];
-  resultados.forEach(dia => {
-    if (dia.llegadasNocturnas >= 0 && dia.llegadasNocturnas <= 5) {
-      llegadas[dia.llegadasNocturnas]++;
-    }
-  });
+  // Gráfico de líneas: Llegadas nocturnas por día 
+  const llegadasNocturnasPorDia = resultados.map(dia => dia.llegadasNocturnas);
   new Chart(document.getElementById('pieChart'), {
-    type: 'pie',
+    type: 'line',
     data: {
-      labels: ['0', '1', '2', '3', '4', '5'],
+      labels: resultados.map((_, i) => `Día ${i + 1}`),
       datasets: [{
         label: 'Llegadas Nocturnas',
-        data: llegadas,
-        backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4fd1c5', '#a3e635', '#f87171']
+        data: llegadasNocturnasPorDia,
+        borderColor: '#36a2eb',
+        backgroundColor: 'rgba(54,162,235,0.13)',
+        fill: true,
+        tension: 0.2,
+        pointRadius: 3,
       }]
     },
     options: {
       responsive: true,
       plugins: {
-        title: { display: true, text: 'Distribución de Llegadas Nocturnas' }
+        legend: { display: true },
+        title: { display: true, text: 'Llegadas Nocturnas por Día' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` Día ${ctx.label}: ${ctx.parsed.y} llegadas nocturnas`
+          }
+        }
+      },
+      scales: {
+        x: { 
+          title: { display: true, text: 'Día de Simulación' }
+        },
+        y: { 
+          beginAtZero: true,
+          title: { display: true, text: 'Cantidad de Llegadas Nocturnas' },
+          ticks: { stepSize: 1 }
+        }
       }
     }
   });
 
   // Gráfico de líneas: Retrasos diarios
+  const retrasosDiarios = resultados.map(d => d.retrasosDiaAnterior);
+  const maxRetrasos = Math.max(...retrasosDiarios, 0);
   new Chart(document.getElementById('retrasosChart'), {
     type: 'line',
     data: {
-      labels: resultados.map((_, i) => i + 1),
+      labels: resultados.map((_, i) => `Día ${i + 1}`),
       datasets: [{
-        label: 'Retrasos Diarios',
-        data: resultados.map(d => d.retrasosDiaAnterior),
+        label: 'Retrasos',
+        data: retrasosDiarios,
         borderColor: '#ff6384',
         backgroundColor: 'rgba(255,99,132,0.13)',
         fill: true,
@@ -178,11 +209,26 @@ function mostrarGraficos() {
     options: {
       responsive: true,
       plugins: {
-        title: { display: true, text: 'Retrasos Diarios' }
+        legend: { display: true },
+        title: { display: true, text: 'Retrasos Diarios por Día' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` Día ${ctx.label}: ${ctx.parsed.y} barcazas retrasadas`
+          }
+        }
       },
       scales: {
-        x: { title: { display: true, text: 'Día' } },
-        y: { beginAtZero: true, title: { display: true, text: 'Cantidad de Barcazas Retrasadas' } }
+        x: { 
+          title: { display: true, text: 'Día de Simulación' }
+        },
+        y: {
+          beginAtZero: true,
+          max: maxRetrasos > 0 ? Math.max(maxRetrasos, 5) : undefined,
+          title: { display: true, text: 'Cantidad de Barcazas Retrasadas' },
+          ticks: {
+            stepSize: 1
+          }
+        }
       }
     }
   });
@@ -192,9 +238,9 @@ function mostrarGraficos() {
   new Chart(document.getElementById('utilizacionChart'), {
     type: 'line',
     data: {
-      labels: resultados.map((_, i) => i + 1),
+      labels: resultados.map((_, i) => `Día ${i + 1}`),
       datasets: [{
-        label: 'Utilización del Servidor',
+        label: 'Utilización',
         data: utilizacion,
         borderColor: '#4fd1c5',
         backgroundColor: 'rgba(79,209,197,0.18)',
@@ -206,14 +252,22 @@ function mostrarGraficos() {
     options: {
       responsive: true,
       plugins: {
-        title: { display: true, text: 'Utilización del Servidor Diaria' }
+        legend: { display: true },
+        title: { display: true, text: 'Utilización del Servidor por Día' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` Día ${ctx.label}: ${(ctx.parsed.y * 100).toFixed(1)}%`
+          }
+        }
       },
       scales: {
-        x: { title: { display: true, text: 'Día' } },
+        x: { 
+          title: { display: true, text: 'Día de Simulación' }
+        },
         y: {
           beginAtZero: true,
           max: 1,
-          title: { display: true, text: 'Porcentaje de Utilización' },
+          title: { display: true, text: 'Porcentaje de Utilización (%)' },
           ticks: {
             callback: function (value) {
               return (value * 100).toFixed(0) + "%";
@@ -315,13 +369,9 @@ function mostrarDecisionYResumen() {
   }
 }
 
-// Exporta el resumen ejecutivo a PDF 
+// Exporta el resumen ejecutivo y visualización del dashboard a PDF
 window.exportarPDF = function() {
-  const resumen = document.getElementById("resumenEjecutivo");
-  const decision = document.getElementById("mejorDecision");
-  const sugerencias = document.getElementById("sugerenciasMejora");
   const empresa = document.getElementById("empresaNombre")?.textContent || "";
-  // Extra: KPIs principales
   const kpis = [
     { label: "Promedio Retrasos", value: document.getElementById("promedioRetrasos")?.textContent || "-" },
     { label: "Promedio Llegadas", value: document.getElementById("promedioLlegadas")?.textContent || "-" },
@@ -329,76 +379,74 @@ window.exportarPDF = function() {
     { label: "Barcazas Perdidas", value: document.getElementById("totalPerdidas")?.textContent || "-" },
     { label: "Costo Total", value: document.getElementById("costoGlobal")?.textContent || "-" }
   ];
-  // Extra: Primer y último día simulado
-  const resultados = JSON.parse(localStorage.getItem("resultadosSimulacion") || "[]");
-  let diasSimulados = resultados.length;
-  let primerDia = diasSimulados > 0 ? 1 : "-";
-  let ultimoDia = diasSimulados > 0 ? diasSimulados : "-";
-  // Extra: Gráficos como imágenes (solo si existen)
+  const resumen = document.getElementById("resumenEjecutivo");
+  const decision = document.getElementById("mejorDecision");
+  const sugerencias = document.getElementById("sugerenciasMejora");
+  const riesgos = document.getElementById("riesgosDetectados");
+  // Gráficos principales
   function getChartImg(id) {
     const canvas = document.getElementById(id);
     if (canvas && canvas.toDataURL) {
-      return `<img src="${canvas.toDataURL('image/png')}" style="max-width:100%;margin-bottom:1.2rem;border-radius:12px;box-shadow:0 2px 8px #4fd1c522;">`;
+      return `<img src="${canvas.toDataURL('image/png')}" class="pdf-chart-img" alt="Gráfico">`;
     }
     return "";
   }
-  if (!resumen) return;
-  const win = window.open('', '', 'width=900,height=700');
+  // KPIs visuales
+  function kpiCard(label, value, icon, color) {
+    return `
+      <div class="pdf-kpi-card" style="border-left:5px solid ${color};">
+        <div class="pdf-kpi-icon" style="color:${color};">${icon}</div>
+        <div class="pdf-kpi-label">${label}</div>
+        <div class="pdf-kpi-value">${value}</div>
+      </div>
+    `;
+  }
+  // PDF ventana
+  const win = window.open('', '', 'width=1000,height=800');
   win.document.write(`
     <html>
     <head>
-      <title>Resumen Ejecutivo - Simulación Barcazas</title>
+      <title>Resumen Ejecutivo - Dashboard Barcazas</title>
       <link rel="stylesheet" href="/appweb/css/dashboard.css">
       <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fa; color: #1a2636; margin: 0; padding: 2rem; }
         .pdf-header { text-align: center; margin-bottom: 2.5rem; }
         .pdf-header h1 { color: #4fd1c5; font-size: 2.2rem; margin-bottom: 0.2rem; }
         .pdf-header .pdf-subtitle { color: #888; font-size: 1.1rem; margin-bottom: 0.8rem; }
-        .pdf-section { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 1.5rem 2rem; margin-bottom: 2rem; }
+        .pdf-section { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 1.5rem 2rem; margin-bottom: 2rem; }
         .pdf-section h2 { color: #4fd1c5; font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid #e0f7fa; padding-bottom: 0.5rem; }
         .pdf-section ul { color: #1a2636; font-size: 1.05rem; margin-left: 1.2rem; }
         .pdf-section .decision-text { color: #36a2eb; font-size: 1.1rem; margin-top: 0.7rem; margin-bottom: 0.7rem; }
         .pdf-footer { text-align: right; color: #888; font-size: 0.95rem; margin-top: 2.5rem; }
-        .pdf-kpi-table { width:100%; border-collapse:collapse; margin-bottom:1.5rem;}
-        .pdf-kpi-table th, .pdf-kpi-table td { border-bottom:1px solid #e0f7fa; padding:0.5rem 1rem; text-align:left;}
-        .pdf-kpi-table th { background:#e0f7fa; color:#00796b; font-weight:700;}
-        .pdf-kpi-table td { background:#fff; color:#1a2636;}
-        .pdf-meta { color:#36a2eb; font-size:1.05rem; margin-bottom:1.2rem; }
+        .pdf-kpi-row { display: flex; flex-wrap: wrap; gap: 1.5em; justify-content: center; margin-bottom: 1.5rem; }
+        .pdf-kpi-card { background:#f7fafc; border-radius:12px; box-shadow:0 2px 8px #0001; padding:1.1em 2em 1em 1.2em; min-width:160px; max-width:220px; display:flex; flex-direction:column; align-items:center; margin-bottom:0.5em; }
+        .pdf-kpi-icon { font-size:2.1em; margin-bottom:0.2em; }
+        .pdf-kpi-label { color:#888; font-size:1.01em; margin-bottom:0.2em; }
+        .pdf-kpi-value { color:#1a2636; font-size:1.35em; font-weight:700; }
         .pdf-chart-title { color:#4fd1c5; font-size:1.08rem; margin:1.2rem 0 0.5rem 0; font-weight:600;}
+        .pdf-chart-img { max-width:100%; margin-bottom:1.2rem; border-radius:12px; box-shadow:0 2px 8px #4fd1c522; }
+        .pdf-riesgos-list { color:#d9534f; font-size:1.05em; margin:0.5em 0 0.5em 1.2em; }
+        .pdf-sugerencias-list { color:#1a2636; font-size:1.05em; margin:0.5em 0 0.5em 1.2em; }
+        .pdf-resumen-ejecutivo { background:#f7fafc; border-radius:8px; padding:1rem 1.3rem; border-left:4px solid #4fd1c5; box-shadow:0 1px 4px #4fd1c522; font-weight:500; line-height:1.7; color:#1a2636; }
+        .pdf-section .decision-text { background:#f0f8ff; border-left:4px solid #36a2eb; border-radius:6px; box-shadow:0 1px 4px #36a2eb22; padding:0.7rem 1.1rem; }
       </style>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body>
       <div class="pdf-header">
         <h1>Resumen Ejecutivo</h1>
-        <div class="pdf-subtitle">Simulación de Barcazas - Dashboard</div>
+        <div class="pdf-subtitle">Panel de Control - Barcazas y Logística</div>
+        <div style="color:#36a2eb;font-size:1.08em;margin-bottom:0.5em;">${empresa}</div>
       </div>
       <div class="pdf-section">
-        <div class="pdf-meta">
-          <b>${empresa}</b><br>
-          Días simulados: <b>${diasSimulados}</b> &nbsp; | &nbsp; Primer día: <b>${primerDia}</b> &nbsp; | &nbsp; Último día: <b>${ultimoDia}</b>
+        <h2>Indicadores Clave (KPIs)</h2>
+        <div class="pdf-kpi-row">
+          ${kpiCard("Promedio Retrasos", kpis[0].value, '<i class="fas fa-clock"></i>', "#ff6384")}
+          ${kpiCard("Promedio Llegadas", kpis[1].value, '<i class="fas fa-ship"></i>', "#36a2eb")}
+          ${kpiCard("Promedio Descargas", kpis[2].value, '<i class="fas fa-arrow-down"></i>', "#4fd1c5")}
+          ${kpiCard("Barcazas Perdidas", kpis[3].value, '<i class="fas fa-exclamation-triangle"></i>', "#fbbf24")}
+          ${kpiCard("Costo Total", kpis[4].value, '<i class="fas fa-dollar-sign"></i>', "#4fd1c5")}
         </div>
-        <h2>KPIs Principales</h2>
-        <table class="pdf-kpi-table">
-          <tr>
-            <th>Indicador</th>
-            <th>Valor</th>
-          </tr>
-          ${kpis.map(kpi => `<tr><td>${kpi.label}</td><td>${kpi.value}</td></tr>`).join('')}
-        </table>
-      </div>
-      <div class="pdf-section">
-        <h2>Resumen de Resultados</h2>
-        <div>${resumen.innerHTML}</div>
-      </div>
-      <div class="pdf-section">
-        <h2>Recomendación Final</h2>
-        <div class="decision-text">${decision ? decision.innerHTML : ''}</div>
-      </div>
-      <div class="pdf-section">
-        <h2>Sugerencias de Mejora</h2>
-        <ul>
-          ${sugerencias ? Array.from(sugerencias.children).map(li => `<li>${li.textContent}</li>`).join('') : ''}
-        </ul>
       </div>
       <div class="pdf-section">
         <h2>Visualización de Gráficos</h2>
@@ -411,6 +459,28 @@ window.exportarPDF = function() {
         <div class="pdf-chart-title">Utilización Servidor</div>
         ${getChartImg('utilizacionChart')}
       </div>
+      <div class="pdf-section">
+        <h2>Riesgos Detectados</h2>
+        <ul class="pdf-riesgos-list">
+          ${riesgos && riesgos.children.length
+            ? Array.from(riesgos.children).map(li => `<li>${li.textContent}</li>`).join('')
+            : '<li>No se detectaron riesgos significativos.</li>'}
+        </ul>
+      </div>
+      <div class="pdf-section">
+        <h2>Recomendación Final</h2>
+        <div class="decision-text">${decision ? decision.innerHTML : ''}</div>
+      </div>
+      <div class="pdf-section">
+        <h2>Resumen Ejecutivo</h2>
+        <div class="pdf-resumen-ejecutivo">${resumen ? resumen.innerHTML : ''}</div>
+      </div>
+      <div class="pdf-section">
+        <h2>Sugerencias de Mejora</h2>
+        <ul class="pdf-sugerencias-list">
+          ${sugerencias ? Array.from(sugerencias.children).map(li => `<li>${li.textContent}</li>`).join('') : ''}
+        </ul>
+      </div>
       <div class="pdf-footer">
         Generado por el sistema de simulación - ${new Date().toLocaleString()}
       </div>
@@ -420,6 +490,20 @@ window.exportarPDF = function() {
   win.document.close();
   win.print();
 };
+
+// Actualización automática al detectar cambios en localStorage (evento storage)
+window.addEventListener("storage", function (e) {
+  if (
+    e.key === "resultadosSimulacion" ||
+    e.key === "promediosSimulacion" ||
+    e.key === "periodosSimulacion"
+  ) {
+    mostrarResumen();
+    mostrarRiesgos();
+    mostrarGraficos();
+    mostrarDecisionYResumen();
+  }
+});
 
 // Inicializa el dashboard al cargar la página
 window.onload = function() {

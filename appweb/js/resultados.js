@@ -66,14 +66,25 @@ function obtenerDatosSimulacion() {
 }
 
 // =====================
-// Calcula la distribución de llegadas nocturnas a partir de los resultados
+// Calcula la distribución de llegadas nocturnas a partir de los resultados (dinámico)
 // =====================
+<<<<<<< Updated upstream
 function calcularDistribucionLlegadas(resultados) { //resultados es un objeto con los resultados de la función anterior
   const distribucion = [0, 0, 0, 0, 0, 0]; //de 0 a 5 (cada indice representa un numero de llegadas nocturnas, en la [0] es de cuantas veces hubo 0 llegadas...)
   resultados.forEach(dia => {
     const llegadas = dia.llegadasNocturnas;
     if (llegadas >= 0 && llegadas <= 5) {
       distribucion[llegadas]++; //contador (suma 1 en la posicion en base al numero de la llegada). el dice> sumele 1 a esa posicion
+=======
+function calcularDistribucionLlegadas(resultados) {
+  const maxLlegadas = resultados.reduce((max, dia) => Math.max(max, dia.llegadasNocturnas), 0);
+  const distribucion = Array(maxLlegadas + 1).fill(0);
+  resultados.forEach((dia) => {
+    const llegadas = dia.llegadasNocturnas;
+    if (llegadas >= 0) {
+      if (distribucion[llegadas] === undefined) distribucion[llegadas] = 0;
+      distribucion[llegadas]++;
+>>>>>>> Stashed changes
     }
   });
   return distribucion;
@@ -164,12 +175,14 @@ function inicializarGraficos() {
   if (!datos) return;
 
   const { resultados, promedios } = datos;
+  const totalDias = resultados.length;
 
   // Llenar sección "Costos Asociados"
   llenarCostosAsociados();
 
   // Calcular métricas para gráficos y promedios
   const distribucionLlegadas = calcularDistribucionLlegadas(resultados);
+  const sumaFrecuenciasLlegadas = distribucionLlegadas.reduce((a, b) => a + b, 0);
   const retrasosDiarios = extraerRetrasosDiarios(resultados);
   const descargasDiarias = extraerDescargasDiarias(resultados);
 
@@ -240,20 +253,22 @@ function inicializarGraficos() {
     },
   });
 
-  // --- Gráfico de área para la distribución de llegadas nocturnas
+  // --- Gráfico de líneas: Llegadas nocturnas por día 
+  const llegadasNocturnasPorDia = resultados.map(dia => dia.llegadasNocturnas);
   const ctxArea = document.getElementById("llegadasPieChart").getContext("2d");
   new Chart(ctxArea, {
     type: "line",
     data: {
-      labels: ["0", "1", "2", "3", "4", "5"],
+      labels: resultados.map((_, i) => `Día ${i + 1}`),
       datasets: [
         {
-          label: "Distribución Llegadas",
-          data: distribucionLlegadas,
+          label: "Llegadas Nocturnas",
+          data: llegadasNocturnasPorDia,
           fill: true,
           backgroundColor: "rgba(0, 128, 0, 0.3)",
           borderColor: "rgba(0, 128, 0, 1)",
           tension: 0.3,
+          pointRadius: 3,
         },
       ],
     },
@@ -261,34 +276,49 @@ function inicializarGraficos() {
       plugins: {
         title: {
           display: true,
-          text: "Distribución de Llegadas Nocturnas",
+          text: "Llegadas Nocturnas por Día",
           font: { size: 18 }
         },
-        legend: { display: true }
+        legend: { display: true },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` Día ${ctx.label}: ${ctx.parsed.y} llegadas nocturnas`
+          }
+        }
       },
       scales: {
         x: {
           title: {
             display: true,
-            text: "Cantidad de Llegadas Nocturnas",
+            text: "Día de Simulación",
             font: { size: 15 }
           }
         },
         y: {
           beginAtZero: true,
-          stepSize: 1,
           title: {
             display: true,
-            text: "Frecuencia (días)",
+            text: "Cantidad de Llegadas Nocturnas",
             font: { size: 15 }
-          }
+          },
+          ticks: { stepSize: 1 }
         }
       },
     },
   });
+  // Mostrar info debajo del gráfico
+  if (!document.getElementById("infoDistribucionLlegadas")) {
+    const info = document.createElement("div");
+    info.id = "infoDistribucionLlegadas";
+    info.style = "margin-top:8px;font-size:14px;color:#06444d;text-align:center;";
+    ctxArea.canvas.parentNode.appendChild(info);
+  }
+  document.getElementById("infoDistribucionLlegadas").textContent =
+    `Total de días simulados: ${totalDias} | Suma de frecuencias: ${sumaFrecuenciasLlegadas}`;
 
-  // --- Gráfico de líneas para los retrasos diarios
+  // --- Gráfico de líneas para los retrasos diarios 
   const ctxLine = document.getElementById("retrasosLineChart").getContext("2d");
+  const maxRetrasos = Math.max(...retrasosDiarios, 0);
   new Chart(ctxLine, {
     type: "line",
     data: {
@@ -322,6 +352,7 @@ function inicializarGraficos() {
         },
         y: {
           beginAtZero: true,
+          max: maxRetrasos > 0 ? Math.max(maxRetrasos, 5) : undefined,
           title: {
             display: true,
             text: "Cantidad de Barcazas Retrasadas",
@@ -331,11 +362,21 @@ function inicializarGraficos() {
       },
     },
   });
+  // Info debajo del gráfico
+  if (!document.getElementById("infoRetrasosDiarios")) {
+    const info = document.createElement("div");
+    info.id = "infoRetrasosDiarios";
+    info.style = "margin-top:8px;font-size:14px;color:#06444d;text-align:center;";
+    ctxLine.canvas.parentNode.appendChild(info);
+  }
+  document.getElementById("infoRetrasosDiarios").textContent =
+    `Total de días simulados: ${totalDias}`;
 
-  // --- Gráfico de barras para las descargas diarias
+  // --- Gráfico de barras para las descargas diarias 
   const ctxColumn = document
     .getElementById("descargasColumnChart")
     .getContext("2d");
+  const maxDescargas = Math.max(...descargasDiarias, 0);
   new Chart(ctxColumn, {
     type: "bar",
     data: {
@@ -369,6 +410,7 @@ function inicializarGraficos() {
         },
         y: {
           beginAtZero: true,
+          max: maxDescargas > 0 ? Math.max(maxDescargas, 5) : undefined,
           title: {
             display: true,
             text: "Cantidad de Barcazas Descargadas",
@@ -378,6 +420,14 @@ function inicializarGraficos() {
       },
     },
   });
+  if (!document.getElementById("infoDescargasDiarias")) {
+    const info = document.createElement("div");
+    info.id = "infoDescargasDiarias";
+    info.style = "margin-top:8px;font-size:14px;color:#06444d;text-align:center;";
+    ctxColumn.canvas.parentNode.appendChild(info);
+  }
+  document.getElementById("infoDescargasDiarias").textContent =
+    `Total de días simulados: ${totalDias}`;
 
   // --- Utilización del servidor diaria
   const utilizacionDiaria = calcularUtilizacionServidor(resultados, 5);
@@ -434,14 +484,23 @@ function inicializarGraficos() {
       },
     },
   });
+  if (!document.getElementById("infoUtilizacionServidor")) {
+    const info = document.createElement("div");
+    info.id = "infoUtilizacionServidor";
+    info.style = "margin-top:8px;font-size:14px;color:#06444d;text-align:center;";
+    ctxUtil.canvas.parentNode.appendChild(info);
+  }
+  document.getElementById("infoUtilizacionServidor").textContent =
+    `Total de días simulados: ${totalDias}`;
 
-  // --- Tiempos promedio en cola y en el sistema ---
+  // --- Tiempos promedio en cola y en el sistema 
   const tiempos = calcularTiemposColaSistema(resultados);
   const tiemposCola = tiempos.map((t) => t.cola);
   const tiemposSistema = tiempos.map((t) => t.sistema);
   const ctxTiempos = document
     .getElementById("tiemposPromedioChart")
     .getContext("2d");
+  const maxTiempos = Math.max(...tiemposCola.concat(tiemposSistema), 0);
   new Chart(ctxTiempos, {
     type: "line",
     data: {
@@ -486,6 +545,7 @@ function inicializarGraficos() {
         },
         y: {
           beginAtZero: true,
+          max: maxTiempos > 0 ? Math.max(maxTiempos, 5) : undefined,
           title: {
             display: true,
             text: "Tiempo (días)",
@@ -495,6 +555,14 @@ function inicializarGraficos() {
       },
     },
   });
+  if (!document.getElementById("infoTiemposPromedio")) {
+    const info = document.createElement("div");
+    info.id = "infoTiemposPromedio";
+    info.style = "margin-top:8px;font-size:14px;color:#06444d;text-align:center;";
+    ctxTiempos.canvas.parentNode.appendChild(info);
+  }
+  document.getElementById("infoTiemposPromedio").textContent =
+    `Total de días simulados: ${totalDias}`;
 }
 
 // =====================
@@ -525,18 +593,18 @@ function mostrarComparacionPeriodos() {
   const ctx = document
     .getElementById("comparacionPeriodosChart")
     .getContext("2d");
-  new Chart(ctx, {
+    new Chart(ctx, {
     type: "bar",
     data: {
       labels: labels,
       datasets: [
         {
-          label: `Periodo 1 (${periodos.rango1.inicio}-${periodos.rango1.fin})`,
+          label: `Periodo 1 (${periodos.rango1.inicio} - ${periodos.rango1.fin})`,
           data: data1,
           backgroundColor: "rgba(54, 162, 235, 0.7)",
         },
         {
-          label: `Periodo 2 (${periodos.rango2.inicio}-${periodos.rango2.fin})`,
+          label: `Periodo 2 (${periodos.rango2.inicio} - ${periodos.rango2.fin})`,
           data: data2,
           backgroundColor: "rgba(255, 99, 132, 0.7)",
         },
@@ -546,18 +614,73 @@ function mostrarComparacionPeriodos() {
       responsive: true,
       plugins: {
         legend: { position: "top" },
+        title: {
+          display: true,
+          text: "Comparación por Periodos",
+          font: { size: 20 }
+        },
+        subtitle: {
+          display: true,
+          text: `Compara el total de cada métrica entre dos periodos definidos. Pase el cursor sobre las barras para ver los valores exactos.`,
+          font: { size: 14 }
+        },
+        tooltip: {
+          callbacks: {
+            title: ctx => {
+              // Muestra la métrica y el periodo
+              const metric = ctx[0].label;
+              const datasetLabel = ctx[0].dataset.label;
+              return `${metric} - ${datasetLabel}`;
+            },
+            label: ctx => {
+              // Formatea el valor con separador de miles y etiqueta
+              let val = ctx.parsed.y;
+              if (ctx.label === "Costos") {
+                val = "$" + val.toLocaleString();
+              }
+              return ` Total: ${val}`;
+            }
+          }
+        }
       },
       scales: {
-        y: { beginAtZero: true },
-      },
-    },
+        x: {
+          title: { display: true, text: "Métrica" }
+        },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: "Valor Total" }
+        }
+      }
+    }
   });
 
-  // Mostrar rangos de días
-  document.getElementById(
-    "infoPeriodos"
-  ).innerHTML = `<strong>Periodo 1:</strong> Días ${periodos.rango1.inicio} a ${periodos.rango1.fin} &nbsp; | &nbsp; 
-         <strong>Periodo 2:</strong> Días ${periodos.rango2.inicio} a ${periodos.rango2.fin}`;
+  // Mejor presentación de rangos y resumen debajo del gráfico, usando clases para estilos en CSS
+  document.getElementById("infoPeriodos").innerHTML = `
+    <div class="periodos-comparacion-resumen">
+      <div class="periodo-bloque periodo1">
+        <div class="periodo-titulo">Periodo 1: <span class="periodo-rango">Días ${periodos.rango1.inicio} a ${periodos.rango1.fin}</span></div>
+        <div class="periodo-metricas">
+          <span class="metrica-label">Llegadas:</span> <span class="metrica-valor">${data1[0]}</span>
+          <span class="metrica-label">Descargas:</span> <span class="metrica-valor">${data1[1]}</span>
+          <span class="metrica-label">Retrasos:</span> <span class="metrica-valor">${data1[2]}</span>
+          <span class="metrica-label">Costos:</span> <span class="metrica-valor">$${data1[3].toLocaleString()}</span>
+        </div>
+      </div>
+      <div class="periodo-bloque periodo2">
+        <div class="periodo-titulo">Periodo 2: <span class="periodo-rango">Días ${periodos.rango2.inicio} a ${periodos.rango2.fin}</span></div>
+        <div class="periodo-metricas">
+          <span class="metrica-label">Llegadas:</span> <span class="metrica-valor">${data2[0]}</span>
+          <span class="metrica-label">Descargas:</span> <span class="metrica-valor">${data2[1]}</span>
+          <span class="metrica-label">Retrasos:</span> <span class="metrica-valor">${data2[2]}</span>
+          <span class="metrica-label">Costos:</span> <span class="metrica-valor">$${data2[3].toLocaleString()}</span>
+        </div>
+      </div>
+    </div>
+    <div class="periodos-comparacion-ayuda">
+      Esta comparación ayuda a identificar tendencias o cambios significativos entre los periodos seleccionados.
+    </div>
+  `;
 }
 
 // =====================
@@ -593,3 +716,18 @@ window.onload = () => {
   setupScrollAnimation();
   mostrarComparacionPeriodos();
 };
+
+// =====================
+// Actualización automática al detectar cambios en localStorage (evento storage)
+// =====================
+window.addEventListener("storage", function (e) {
+  if (
+    e.key === "resultadosSimulacion" ||
+    e.key === "promediosSimulacion" ||
+    e.key === "periodosSimulacion"
+  ) {
+    // Recarga los gráficos y métricas si los datos cambian en otra pestaña
+    inicializarGraficos();
+    mostrarComparacionPeriodos();
+  }
+});

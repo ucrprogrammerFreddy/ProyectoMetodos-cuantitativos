@@ -1,3 +1,4 @@
+/* Fondo principal con imagen y fuente base para la simulación */
 .fondo {
     font-family: Arial, sans-serif;
     background-image: url(../img/fondoBarco2.jpg);
@@ -9,11 +10,13 @@
     background-position: center;
 }
 
+/* Títulos principales de la simulación */
 h1,
 h2 {
     color: #06444d;
 }
 
+/* Estilos para tablas de simulación y probabilidades */
 table {
     width: 50%;
     border-collapse: collapse;
@@ -33,6 +36,7 @@ th {
     color: white;
 }
 
+/* Botones de acción en tablas y formularios */
 button {
     padding: 6px 12px;
     margin-top: 5px;
@@ -46,21 +50,25 @@ button:hover {
     background-color: #046377;
 }
 
+/* Celdas editables resaltadas al enfocar */
 td[contenteditable="true"]:focus {
     background-color: #64acb5;
 }
 
+/* Título de tablas con fondo oscuro */
 .table-title {
     background-color: #002348;
     color: rgb(0, 0, 0);
     text-align: center;
 }
 
+/* Marca visual para celdas destacadas */
 .mark {
     background-color: hsla(0, 0%, 92%, 0.366);
     text-align: center;
 }
 
+/* Título principal con fondo y borde */
 .titulo {
     text-align: center;
     color: #f0f0f0;
@@ -71,6 +79,7 @@ td[contenteditable="true"]:focus {
     margin: 25px;
 }
 
+/* Estilo para el modal de resultados promedio */
 .estiloModal {
     background-color: #06444d;
     margin: 0px;
@@ -87,15 +96,18 @@ td[contenteditable="true"]:focus {
     border-radius: 0 0 0.5rem 0.5rem;
 }
 
+/* Título del modal */
 .titulo2 {
     color: Black;
     text-align: center;
 }
 
+/* Texto destacado en el modal */
 .markModel {
     color: rgb(255, 255, 255);
 }
 
+/* Botón de cierre del modal */
 .bordeB {
     padding: 6px 12px;
     margin-top: 5px;
@@ -105,22 +117,25 @@ td[contenteditable="true"]:focus {
     cursor: pointer;
 }
 
+/* Fondo para los totales de tablas */
 .fondoTablas {
     background-color: black;
 }
 
+/* Color de letra para celdas específicas */
 .colorL {
     color: white;
     background-color: #00000090;
 }
 
+/* Contenedor para botones principales */
 .button-container {
     display: flex;
     justify-content: center;
     margin-top: 10px;
 }
 
-/*Alerta*/
+/* Alerta elegante para advertencias */
 .alerta-elegante {
     display: none;
     background-color: #fff3cd;
@@ -148,9 +163,7 @@ td[contenteditable="true"]:focus {
     flex: 1;
 }
 
-
-
-/* Modal styles */ 
+/* Modal styles para resultados promedio */
 .custom-modal {
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -187,7 +200,7 @@ td[contenteditable="true"]:focus {
     border-bottom-right-radius: 12px;
 }
 
-/* Estilo para los textos del cuerpo */
+/* Estilo para los textos del cuerpo del modal */
 .markModel {
     font-weight: 500;
     margin-bottom: 10px;

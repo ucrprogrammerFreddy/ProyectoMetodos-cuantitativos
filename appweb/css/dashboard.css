@@ -1,4 +1,4 @@
-/* --- Estilos generales y fondo --- */
+/* --- Estilos generales y fondo para el dashboard principal --- */
 body {
   margin: 0;
   font-family: 'Segoe UI', Arial, sans-serif;
@@ -9,7 +9,7 @@ body {
   overflow-x: hidden;
 }
 
-/* --- Sidebar principal --- */
+/* --- Sidebar principal con menú de navegación y acciones --- */
 .sidebar {
   /* Menú lateral fijo y estilizado */
   position: sticky;
@@ -108,7 +108,7 @@ body {
   }
 }
 
-/* --- Encabezado y título principal --- */
+/* --- Encabezado y título principal del dashboard --- */
 .dashboard-header .display-5,
 .dashboard-title {
   text-align: center !important;
@@ -141,7 +141,7 @@ body {
   box-shadow: 0 1px 4px rgba(79,209,197,0.08);
 }
 
-/* --- KPIs y tarjetas principales --- */
+/* --- KPIs y tarjetas principales del dashboard --- */
 .summary-cards .card {
   background: #fff;
   border-radius: 16px;
@@ -216,7 +216,7 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* --- Gráficos principales --- */
+/* --- Gráficos principales del dashboard --- */
 .chart-container {
   background: #fff;
   border-radius: 16px;
@@ -249,7 +249,7 @@ body {
   background: linear-gradient(180deg, #f0fdf4 60%, #fff 100%);
 }
 
-/* --- Bloques extra: resumen y sugerencias --- */
+/* --- Bloques extra: resumen ejecutivo y sugerencias de mejora --- */
 .extra-block {
   background: #fff;
   border-radius: 14px;
@@ -297,7 +297,7 @@ body {
   padding-left: 0.2rem;
 }
 
-/* --- Otros estilos útiles --- */
+/* --- Otros estilos útiles para mensajes y responsive --- */
 .no-data-msg {
   color: #888;
   text-align: center;
@@ -305,43 +305,7 @@ body {
   padding: 2.5rem 0;
 }
 
-/* --- Responsive y ajustes --- */
-@media (max-width: 1200px) {
-  .btn-export-pdf-sidebar span,
-  .btn-darkmode-sidebar span {
-    display: none !important;
-  }
-  .btn-export-pdf-sidebar, .btn-darkmode-sidebar {
-    padding-left: 0.7rem;
-    padding-right: 0.7rem;
-    font-size: 1.15rem;
-  }
-}
-@media (max-width: 900px) {
-  .sidebar-logo span { font-size: 1rem; }
-  .empresa-nombre { font-size: 0.9rem; }
-  .dashboard-header h1 { font-size: 1.3rem; }
-  .main-content, main.col { padding: 0.5rem; }
-  .summary-cards .card { min-width: 140px; }
-}
-@media (max-width: 600px) {
-  .main-content, main.col { padding: 0.2rem; }
-  .dashboard-header h1 { font-size: 1.1rem; }
-}
-@media (min-width: 768px) {
-  .chart-container {
-    min-height: 320px;
-    margin-bottom: 0 !important;
-  }
-}
-@media (max-width: 767px) {
-  .chart-container {
-    min-height: 220px;
-    margin-bottom: 1.5rem;
-  }
-}
-
-/* --- Modo oscuro --- */
+/* --- Modo oscuro para el dashboard --- */
 body.darkmode {
   background: linear-gradient(135deg, #232b36 0%, #1a2636 100%);
   color: #e0f7fa;
@@ -454,6 +418,80 @@ body.darkmode .card .small.text-muted {
 }
 body.darkmode .summary-cards .card {
   color: #e0f7fa !important;
+}
+
+/* Estilos de PDF --- */
+.pdf-kpi-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5em;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.pdf-kpi-card {
+  background: #f7fafc;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 1.1em 2em 1em 1.2em;
+  min-width: 160px;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+.pdf-kpi-icon {
+  font-size: 2.1em;
+  margin-bottom: 0.2em;
+}
+.pdf-kpi-label {
+  color: #888;
+  font-size: 1.01em;
+  margin-bottom: 0.2em;
+}
+.pdf-kpi-value {
+  color: #1a2636;
+  font-size: 1.35em;
+  font-weight: 700;
+}
+.pdf-chart-title {
+  color: #4fd1c5;
+  font-size: 1.08rem;
+  margin: 1.2rem 0 0.5rem 0;
+  font-weight: 600;
+}
+.pdf-chart-img {
+  max-width: 100%;
+  margin-bottom: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #4fd1c522;
+}
+.pdf-riesgos-list {
+  color: #d9534f;
+  font-size: 1.05em;
+  margin: 0.5em 0 0.5em 1.2em;
+}
+.pdf-sugerencias-list {
+  color: #1a2636;
+  font-size: 1.05em;
+  margin: 0.5em 0 0.5em 1.2em;
+}
+.pdf-resumen-ejecutivo {
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 1rem 1.3rem;
+  border-left: 4px solid #4fd1c5;
+  box-shadow: 0 1px 4px #4fd1c522;
+  font-weight: 500;
+  line-height: 1.7;
+  color: #1a2636;
+}
+.pdf-section .decision-text {
+  background: #f0f8ff;
+  border-left: 4px solid #36a2eb;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px #36a2eb22;
+  padding: 0.7rem 1.1rem;
 }
 
 /* --- Fin de estilos --- */

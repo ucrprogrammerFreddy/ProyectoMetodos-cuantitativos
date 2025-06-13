@@ -1,4 +1,4 @@
-/* Estilo general del body */
+/* Establece la fuente principal y el color base del texto para toda la página */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
@@ -9,7 +9,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Imagen de fondo */
+/* Aplica una imagen de fondo fija y oscurecida para mejorar la legibilidad */
 body::before {
   content: "";
   position: fixed;
@@ -25,7 +25,7 @@ body::before {
   filter: brightness(0.7) contrast(1.2) saturate(1.1);
 }
 
-/* Capa oscura encima del fondo */
+/* Capa oscura sobre el fondo para mejorar la legibilidad de los contenidos */
 .overlay {
   background-color: rgba(20, 30, 40, 0.6);
   min-height: 100vh;
@@ -34,7 +34,7 @@ body::before {
   box-shadow: 0 0 20px rgba(83, 197, 144, 0.5);
 }
 
-/* Encabezados */
+/* Estilos para encabezados principales y títulos de sección */
 h1 {
   text-align: center;
   margin-bottom: 2rem;
@@ -56,7 +56,7 @@ h2 {
   color: #f8f9fa;
 }
 
-/* Secciones de resultados */
+/* Espaciado entre secciones de resultados */
 section {
   margin-bottom: 2rem;
   color: #f8f9fa;
@@ -70,7 +70,7 @@ section {
   color: #f8f9fa;
 }
 
-/* Tarjetas de gráficos con fondo más claro */
+/* Contenedor de gráficos con fondo claro y bordes destacados */
 .chart-container {
   background: rgba(245, 250, 255, 0.93);
   border-radius: 18px;
@@ -84,20 +84,20 @@ section {
   transition: box-shadow 0.3s;
 }
 
-/* Mejora para los nuevos gráficos */
+/* Fondo transparente para gráficos específicos de utilización y tiempos */
 #utilizacionServidorChart, #tiemposPromedioChart {
   background: transparent;
   margin-top: 1.2rem;
   margin-bottom: 1.2rem;
 }
 
-/* Canvas responsivo */
+/* Canvas de gráficos responsivo para adaptarse a distintos tamaños de pantalla */
 canvas {
   max-width: 100%;
   height: auto;
 }
 
-/* Botón  */
+/* Botón principal de acción para navegación */
 .btn-primary {
   background-color: #0d6efd;
   border: none;
@@ -115,7 +115,7 @@ canvas {
   color: white;
 }
 
-/* Botón  para regresar a simulación */
+/* Botón para regresar a simulación con gradiente y sombra */
 .btn-simulacion {
   background: linear-gradient(90deg, #00796b 60%, #4fd1c5 100%);
   color: #fff;
@@ -138,7 +138,7 @@ canvas {
   text-decoration: none;
 }
 
-/* Botón  para ver dashboard */
+/* Botón para ver dashboard con gradiente y sombra */
 .btn-dashboard {
   background: linear-gradient(90deg, #36a2eb 60%, #4fd1c5 100%);
   color: #fff;
@@ -161,13 +161,13 @@ canvas {
   text-decoration: none;
 }
 
-/* Ajuste para iconos en los botones */
+/* Ajuste para iconos en los botones de acción */
 .btn-simulacion i, .btn-dashboard i {
   font-size: 1.2rem;
   vertical-align: middle;
 }
 
-/* portada inicial */
+/* Portada inicial centrada verticalmente */
 .intro {
   display: flex;
   flex-direction: column;
@@ -176,19 +176,19 @@ canvas {
   text-align: center;
 }
 
-/* Sección de gráficos */
+/* Sección de gráficos con fondo y color de texto */
 .graficos-section {
   background-color: #e6f0f5;
   color: #212529;
   padding: 4rem 2rem;
 }
 
-/* Animación suave al hacer scroll */
+/* Animación suave al hacer scroll en la página */
 html {
   scroll-behavior: smooth;
 }
 
-/*  transiciones opcionales */
+/* Transición de aparición para los gráficos al hacer scroll */
 .chart-container {
   opacity: 0;
   transform: translateY(20px);
@@ -200,7 +200,7 @@ html {
   transform: translateY(0);
 }
 
-/* Tarjeta de costos y promedios */
+/* Tarjeta de costos y promedios con fondo oscuro y bordes */
 .card-costos, .card-promedio {
   background: rgba(30, 40, 60, 0.92);
   border-radius: 18px;
@@ -214,16 +214,7 @@ html {
   margin-right: auto;
 }
 
-.card-costos .titulo-seccion,
-.card-promedio .titulo-seccion {
-  color: #4fd1c5;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-}
-
+/* Lista de costos y promedios con separación visual */
 .lista-costos, .lista-promedio {
   list-style: none;
   padding: 0;
@@ -243,6 +234,7 @@ html {
   border-bottom: none;
 }
 
+/* Estilo para el costo global destacado */
 .costo-global {
   background: linear-gradient(90deg, #4fd1c5 60%, #2b6cb0 100%);
   color: #222;
@@ -256,20 +248,24 @@ html {
   box-shadow: 0 2px 8px rgba(0,0,0,0.13);
 }
 
+/* Iconos para listas y tarjetas */
 .icono-costos, .icono-prom, .icono-item {
   font-size: 1.2em;
   vertical-align: middle;
   color: #ffe066;
 }
 
+/* Tarjeta de promedios con borde amarillo */
 .card-promedio {
   border: 1.5px solid #ffe066;
 }
 
+/* Título de sección para tarjeta de promedios */
 .card-promedio .titulo-seccion {
   color: #ffe066;
 }
 
+/* Título de gráficos dentro de las tarjetas de gráficos */
 .chart-container h2 {
   color: #2b6cb0;
   font-size: 1.35rem;
@@ -286,6 +282,7 @@ html {
   border-radius: 12px 12px 0 0;
 }
 
+/* Línea divisoria decorativa entre tarjetas de gráficos */
 .chart-container:not(:last-child)::after {
   content: "";
   display: block;
@@ -298,6 +295,63 @@ html {
   border-radius: 0 0 12px 12px;
 }
 
+/* Resumen visual de comparación de periodos, bloques y métricas */
+.periodos-comparacion-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5em;
+  justify-content: center;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+.periodo-bloque {
+  background: #f7fafc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 14px 24px 10px 24px;
+  min-width: 220px;
+  max-width: 320px;
+  font-size: 1.08em;
+}
+.periodo1 { border-left: 5px solid #3682d6; }
+.periodo2 { border-left: 5px solid #d9534f; }
+.periodo-titulo {
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 6px;
+  font-size: 1.08em;
+}
+.periodo-rango {
+  color: #888;
+  font-weight: normal;
+  font-size: 0.98em;
+  margin-left: 4px;
+}
+.periodo-metricas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2em;
+  margin-top: 2px;
+}
+.metrica-label {
+  color: #666;
+  font-weight: 500;
+  margin-right: 2px;
+}
+.metrica-valor {
+  color: #222;
+  font-weight: bold;
+  margin-right: 10px;
+}
+.periodos-comparacion-ayuda {
+  margin-top: 10px;
+  font-size: 0.97em;
+  color: #444;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Ajustes responsivos para pantallas pequeñas */
 @media (max-width: 700px) {
   .chart-container {
     padding: 1.2rem 0.5rem 1rem 0.5rem;
