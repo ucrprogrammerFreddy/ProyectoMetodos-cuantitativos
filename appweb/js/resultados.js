@@ -66,25 +66,37 @@ function obtenerDatosSimulacion() {
 }
 
 // =====================
-// Calcula la distribución de llegadas nocturnas a partir de los resultados (dinámico)
+// Calcula la distribución de llegadas nocturnas a partir de los resultados
 // =====================
-<<<<<<< Updated upstream
+
+/*
+Kattia revise:
+
 function calcularDistribucionLlegadas(resultados) { //resultados es un objeto con los resultados de la función anterior
   const distribucion = [0, 0, 0, 0, 0, 0]; //de 0 a 5 (cada indice representa un numero de llegadas nocturnas, en la [0] es de cuantas veces hubo 0 llegadas...)
   resultados.forEach(dia => {
     const llegadas = dia.llegadasNocturnas;
     if (llegadas >= 0 && llegadas <= 5) {
-      distribucion[llegadas]++; //contador (suma 1 en la posicion en base al numero de la llegada). el dice> sumele 1 a esa posicion
-=======
+      distribucion[llegadas]++; //contador (suma 1 en la posicion en base al numero de la llegada)
+    }
+  });
+  return distribucion;
+}
+*/
+
+// Versión actualizada para soportar más de 5 llegadas nocturnas
 function calcularDistribucionLlegadas(resultados) {
-  const maxLlegadas = resultados.reduce((max, dia) => Math.max(max, dia.llegadasNocturnas), 0);
+  // Calcula el máximo de llegadas nocturnas para soportar cualquier rango
+  let maxLlegadas = 5;
+  if (resultados.length > 0) {
+    maxLlegadas = resultados.reduce((max, dia) => Math.max(max, dia.llegadasNocturnas), 0);
+    if (maxLlegadas < 5) maxLlegadas = 5;
+  }
   const distribucion = Array(maxLlegadas + 1).fill(0);
-  resultados.forEach((dia) => {
+  resultados.forEach(dia => {
     const llegadas = dia.llegadasNocturnas;
-    if (llegadas >= 0) {
-      if (distribucion[llegadas] === undefined) distribucion[llegadas] = 0;
+    if (llegadas >= 0 && llegadas <= maxLlegadas) {
       distribucion[llegadas]++;
->>>>>>> Stashed changes
     }
   });
   return distribucion;
