@@ -68,22 +68,6 @@ function obtenerDatosSimulacion() {
 // =====================
 // Calcula la distribución de llegadas nocturnas a partir de los resultados
 // =====================
-
-/*
-Kattia revise:
-
-function calcularDistribucionLlegadas(resultados) { //resultados es un objeto con los resultados de la función anterior
-  const distribucion = [0, 0, 0, 0, 0, 0]; //de 0 a 5 (cada indice representa un numero de llegadas nocturnas, en la [0] es de cuantas veces hubo 0 llegadas...)
-  resultados.forEach(dia => {
-    const llegadas = dia.llegadasNocturnas;
-    if (llegadas >= 0 && llegadas <= 5) {
-      distribucion[llegadas]++; //contador (suma 1 en la posicion en base al numero de la llegada)
-    }
-  });
-  return distribucion;
-}
-*/
-
 // Versión actualizada para soportar más de 5 llegadas nocturnas
 function calcularDistribucionLlegadas(resultados) {
   // Calcula el máximo de llegadas nocturnas para soportar cualquier rango
