@@ -68,12 +68,12 @@ function obtenerDatosSimulacion() {
 // =====================
 // Calcula la distribución de llegadas nocturnas a partir de los resultados
 // =====================
-function calcularDistribucionLlegadas(resultados) {
-  const distribucion = [0, 0, 0, 0, 0, 0];
-  resultados.forEach((dia) => {
+function calcularDistribucionLlegadas(resultados) { //resultados es un objeto con los resultados de la función anterior
+  const distribucion = [0, 0, 0, 0, 0, 0]; //de 0 a 5 (cada indice representa un numero de llegadas nocturnas, en la [0] es de cuantas veces hubo 0 llegadas...)
+  resultados.forEach(dia => {
     const llegadas = dia.llegadasNocturnas;
     if (llegadas >= 0 && llegadas <= 5) {
-      distribucion[llegadas]++;
+      distribucion[llegadas]++; //contador (suma 1 en la posicion en base al numero de la llegada). el dice> sumele 1 a esa posicion
     }
   });
   return distribucion;
@@ -104,6 +104,8 @@ function calcularUtilizacionServidor(resultados, capacidadMaxima = 5) {
 // Calcula los tiempos promedio en cola y en el sistema por día
 // =====================
 function calcularTiemposColaSistema(resultados) {
+  // Tiempo en cola: retrasos del día anterior
+  // Tiempo en sistema: tiempo en cola + 1 (día de servicio)
   return resultados.map((dia) => ({
     cola: dia.retrasosDiaAnterior,
     sistema: dia.retrasosDiaAnterior + 1,
@@ -157,6 +159,7 @@ function llenarCostosAsociados() {
 // Inicializa los gráficos con los datos obtenidos y muestra los costos calculados
 // =====================
 function inicializarGraficos() {
+  // Obtener datos de simulación y promedios desde localStorage
   const datos = obtenerDatosSimulacion();
   if (!datos) return;
 
@@ -178,16 +181,18 @@ function inicializarGraficos() {
   document.getElementById("promedioDescargas").textContent =
     promedios.promedioDescargas;
 
-  // --- Gráfico de barras para los promedios diarios
+  // --- Gráficos ---
+  //Gráfico de barras para los promedios diarios
   const ctxBar = document.getElementById("promediosBarChart").getContext("2d");
-  new Chart(ctxBar, {
+  new Chart(ctxBar, { //Crea un nuevo gráfico sobre el canvas(en html).
     type: "bar",
     data: {
+      // Eje X: Tipos de métricas
       labels: ["Retrasos", "Llegadas", "Descargas"],
       datasets: [
         {
           label: "Promedio Diario",
-          data: [
+          data: [ //valores de las barras
             parseFloat(promedios.promedioRetrasos),
             parseFloat(promedios.promedioLlegadas),
             parseFloat(promedios.promedioDescargas),
@@ -224,7 +229,7 @@ function inicializarGraficos() {
           }
         },
         y: {
-          beginAtZero: true,
+          beginAtZero: true, // beginAtZero: true, hace que las barras empiecen desde 0.
           title: {
             display: true,
             text: "Cantidad Promedio",
@@ -496,13 +501,14 @@ function inicializarGraficos() {
 // Mostrar comparación de periodos en gráfico de barras
 // =====================
 function mostrarComparacionPeriodos() {
+  //preparamos los datos 
   const periodos = JSON.parse(
     localStorage.getItem("periodosSimulacion") || "{}"
   );
   if (!periodos.periodo1 || !periodos.periodo2) return;
 
   const labels = ["Llegadas", "Descargas", "Retrasos", "Costos"];
-  const data1 = [
+  const data1 = [ // creacion de arreglos
     periodos.periodo1.llegadas,
     periodos.periodo1.descargas,
     periodos.periodo1.retrasos,
@@ -515,6 +521,7 @@ function mostrarComparacionPeriodos() {
     periodos.periodo2.costo,
   ];
 
+  //creacion del grafico
   const ctx = document
     .getElementById("comparacionPeriodosChart")
     .getContext("2d");
