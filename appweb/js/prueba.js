@@ -78,6 +78,18 @@ function generarSimulacion() {
     const totalADescargar = retrasosAnterior + llegadas;
     const descargas = Math.min(totalADescargar, calcularDescargas(rDescarga));
 
+    // Selecciona los valores del evento y afectación (por ahora base 0)
+    let tipoEvento = "ninguno";
+    let afectacion = 0;
+
+    // Aplica afectación si hay evento
+    if (tipoEvento === "tormenta") {
+      descargas = Math.floor(descargas * (1 - afectacion / 100));
+    } else if (tipoEvento === "huelga") {
+      descargas = 0;
+    }
+
+
     // Cálculo de costos por día
     const costoRetrasoDia = retrasosAnterior * costoPorRetraso;
     const costoEstadiaDia = totalADescargar * costoPorEstadia;
@@ -87,7 +99,15 @@ function generarSimulacion() {
     // Agrega fila a la tabla visual
     const fila = document.createElement("tr");
     fila.innerHTML = `
-            
+            <td>
+              <select class="evento-select">
+                  <option value="ninguno" selected>Ninguno</option>
+                  <option value="tormenta">Tormenta</option>
+                  <option value="huelga">Huelga</option>
+                  <option value="otro">Otro</option>
+              </select>
+            </td>
+            <td><span contenteditable="true" class="afectacion-celda">0</span>%</td>
             <td>${i}</td>
             <td>${retrasosAnterior}</td>
             <td>${rLlegada}</td>
@@ -379,9 +399,9 @@ function recalcularYPropagar() {
   calcularPeriodosYGuardar(resultadosDiarios);
 
   // Dispara manualmente el evento storage para la misma pestaña (para pruebas locales)
-  window.dispatchEvent(new StorageEvent("storage", {key: "resultadosSimulacion"}));
-  window.dispatchEvent(new StorageEvent("storage", {key: "promediosSimulacion"}));
-  window.dispatchEvent(new StorageEvent("storage", {key: "periodosSimulacion"}));
+  window.dispatchEvent(new StorageEvent("storage", { key: "resultadosSimulacion" }));
+  window.dispatchEvent(new StorageEvent("storage", { key: "promediosSimulacion" }));
+  window.dispatchEvent(new StorageEvent("storage", { key: "periodosSimulacion" }));
 }
 
 // =====================
