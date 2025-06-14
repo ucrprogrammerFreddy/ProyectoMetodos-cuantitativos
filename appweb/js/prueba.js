@@ -87,6 +87,7 @@ function generarSimulacion() {
     // Agrega fila a la tabla visual
     const fila = document.createElement("tr");
     fila.innerHTML = `
+            
             <td>${i}</td>
             <td>${retrasosAnterior}</td>
             <td>${rLlegada}</td>

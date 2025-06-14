@@ -9,6 +9,24 @@
     background-repeat: no-repeat;
     background-position: center;
 }
+.fondo::before {
+    content: ""; /* Es obligatorio en ::before y ::after */
+    position: fixed; /* Se fija a la pantalla completa */
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(10, 15, 25, 0.6); /* Fondo negro con transparencia */
+    z-index: -1; /* Lo manda detrás del contenido principal */
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.85) !important; /* Blanco translúcido */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* Sombra suave */
+  border-radius: 1rem; /* Bordes redondeados */
+  backdrop-filter: blur(1px); /* Efecto de desenfoque del fondo */
+}
+
 
 /* Títulos principales de la simulación */
 h1,
@@ -18,11 +36,15 @@ h2 {
 
 /* Estilos para tablas de simulación y probabilidades */
 table {
-    width: 50%;
-    border-collapse: collapse;
-    margin-bottom: 15px;
-    background-color: rgba(0, 0, 0, 0.523);
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
 }
+
 
 th,
 td {
@@ -32,8 +54,17 @@ td {
 }
 
 th {
-    background-color: #438fed;
-    color: white;
+    background-color: #16474b  !important;
+    color: white !important;
+}
+
+tbody tr:nth-child(odd) td {
+  background-color: rgba(240, 248, 255, 0.65);
+}
+
+tfoot td {
+  font-weight: bold;
+  color: #000000 !important; 
 }
 
 /* Botones de acción en tablas y formularios */
@@ -50,14 +81,34 @@ button:hover {
     background-color: #046377;
 }
 
+.btn-generar {
+  background: linear-gradient(90deg, #115561 0%, #15655d 100%);
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(54, 162, 235, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-generar:hover {
+  background: linear-gradient(90deg, #0a3e39 0%, #064f4f 100%);
+  box-shadow: 0 6px 16px rgba(54, 162, 235, 0.4);
+  transform: scale(1.03);
+}
+
 /* Celdas editables resaltadas al enfocar */
 td[contenteditable="true"]:focus {
-    background-color: #64acb5;
+    background-color: #288792;
+    color: white;
 }
 
 /* Título de tablas con fondo oscuro */
 .table-title {
-    background-color: #002348;
+    background-color: #0f3f42;
     color: rgb(0, 0, 0);
     text-align: center;
 }
@@ -72,7 +123,18 @@ td[contenteditable="true"]:focus {
 .titulo {
     text-align: center;
     color: #f0f0f0;
-    background-color: rgba(0, 0, 0, 0.753);
+    background-color: #04373ac0;
+    font-family: 'Times New Roman', Times, serif;
+    border-radius: 0.5rem;
+    border: 1px solid #ffffff;
+    margin: 25px;
+}
+
+.tituloGeneral {
+    text-align: center;
+    color: #f0f0f0;
+    background: linear-gradient(90deg, #113c42, #051e32);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
     font-family: 'Times New Roman', Times, serif;
     border-radius: 0.5rem;
     border: 1px solid #ffffff;
@@ -119,7 +181,7 @@ td[contenteditable="true"]:focus {
 
 /* Fondo para los totales de tablas */
 .fondoTablas {
-    background-color: black;
+    background-color: rgb(77, 20, 20);
 }
 
 /* Color de letra para celdas específicas */
