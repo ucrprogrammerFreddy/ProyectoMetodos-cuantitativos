@@ -54,7 +54,7 @@ td {
 }
 
 th {
-    background-color: #16474b  !important;
+    /* background-color: #0a0a0a  !important; */
     color: white !important;
 }
 
@@ -64,7 +64,7 @@ tbody tr:nth-child(odd) td {
 
 tfoot td {
   font-weight: bold;
-  color: #000000 !important; 
+  color: #201e1e !important; 
 }
 
 /* Botones de acción en tablas y formularios */
@@ -102,13 +102,13 @@ button:hover {
 
 /* Celdas editables resaltadas al enfocar */
 td[contenteditable="true"]:focus {
-    background-color: #288792;
-    color: white;
+    background-color: #a1afb1;
+    color: rgb(0, 0, 0);
 }
 
 /* Título de tablas con fondo oscuro */
 .table-title {
-    background-color: #0f3f42;
+    background-color: #51696b;
     color: rgb(0, 0, 0);
     text-align: center;
 }
@@ -122,11 +122,12 @@ td[contenteditable="true"]:focus {
 /* Título principal con fondo y borde */
 .titulo {
     text-align: center;
-    color: #f0f0f0;
-    background-color: #04373ac0;
-    font-family: 'Times New Roman', Times, serif;
-    border-radius: 0.5rem;
-    border: 1px solid #ffffff;
+    color: #000000;
+    /* background-color: #04373ac0; */
+    font-weight: bold;
+    /* font-family: 'Times New Roman', Times, serif; */
+    /* border-radius: 0.5rem; */
+    /* border: 1px solid #ffffff; */
     margin: 25px;
 }
 
