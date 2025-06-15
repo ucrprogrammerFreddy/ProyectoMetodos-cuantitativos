@@ -312,6 +312,7 @@ function observarCambios() {
       const row = select.closest("tr");
       const celda = row.querySelector(".afectacion-celda");
 
+
       if (!celda) return;
 
       // Evento tormenta
@@ -330,7 +331,7 @@ function observarCambios() {
         input.type = "text";
         input.placeholder = "Nombre del evento";
         input.className = "form-control form-control-sm mt-1 nombre-evento-input";
-        select.style.display = "none";
+        select.style.display = "none"; // ocultar el select
         select.parentNode.appendChild(input);
         input.focus();
 
@@ -343,10 +344,20 @@ function observarCambios() {
           } else {
             select.value = "ninguno";
           }
-          select.style.display = "inline-block"; //hacemo q vuelva a aparecer el select, ya q lo ocultamos con none
+          select.style.display = "inline-block"; //hacemos q vuelva a aparecer el select, ya q lo ocultamos con none
           input.remove(); //ya no se necesita, se borra
           celda.textContent = ""; //limpiamos
           celda.contentEditable = true; //lo volvemos editable
+
+          // Si el usuario presiona Enter estando en el select, mueve el foco a la celda de afectación
+          const range = document.createRange();
+          const sel = window.getSelection(); //permite manipular lo seleccionado en el doc
+          range.selectNodeContents(celda); //le dice al rango q seleccione todo el contenido de la celda
+          range.collapse(false); //coloco el cursor al final de la celda x false
+          sel.removeAllRanges();
+          sel.addRange(range);
+          celda.focus(); //Le da el foco de entrada (input) a la celda, activando la edición.
+
           recalcularYPropagar();
         });
 
@@ -358,7 +369,7 @@ function observarCambios() {
         });
       }
       // Evento ninguno
-      else {
+      else if (select.value === "ninguno") {
         celda.textContent = "0";
         celda.contentEditable = false;
       }
@@ -369,16 +380,37 @@ function observarCambios() {
 
   // Escuchar cambios manuales en el % afectación
   tbody.querySelectorAll(".afectacion-celda").forEach(span => {
+
+    //validamos valor ingresado
     span.addEventListener("input", () => {
-      const valor = parseInt(span.textContent.trim());
-      if (isNaN(valor) || valor < 0 || valor > 100) {
-        span.textContent = "0";
-      }
+      validarAfectacion(span)
       recalcularYPropagar();
+    });
+    
+    // Evitar salto de línea con Enter
+    span.addEventListener("keydown", (e) => {
+
+      if (e.key === "Enter") {
+        e.preventDefault(); // evita salto de línea
+        validarAfectacion(span)
+        span.blur(); // salir de la edicion
+        recalcularYPropagar();
+      }
     });
   });
 }
 
+// =====================
+// valida el valor ingresado en la afectacion del evento
+// =====================
+function validarAfectacion(span) {
+  const valor = parseInt(span.textContent.trim());
+
+  //si no hay dato
+  if (isNaN(valor) || valor < 0 || valor > 100) {
+    span.textContent = "0";
+  }
+}
 
 // =====================
 // Recalcula totales y costos si se editan celdas manualmente
