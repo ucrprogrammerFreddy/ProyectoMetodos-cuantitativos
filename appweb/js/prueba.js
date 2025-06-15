@@ -1,30 +1,30 @@
-// =====================
-// Elimina una fila de una tabla de probabilidades
-// =====================
-function eliminarFila(btn) {
-  const fila = btn.parentNode.parentNode;
-  fila.remove();
-}
+// // =====================
+// // Elimina una fila de una tabla de probabilidades
+// // =====================
+// function eliminarFila(btn) {
+//   const fila = btn.parentNode.parentNode;
+//   fila.remove();
+// }
 
-// =====================
-// Agrega una fila editable a una tabla de probabilidades
-// =====================
-function agregarFila(tablaId) {
-  const tabla = document
-    .getElementById(tablaId)
-    .getElementsByTagName("tbody")[0];
-  const fila = tabla.insertRow();
-  for (let i = 0; i < 4; i++) {
-    const celda = fila.insertCell();
-    celda.contentEditable = true;
-    celda.innerText = "";
-  }
-  const celdaBoton = fila.insertCell();
-  const boton = document.createElement("button");
-  boton.innerText = "Eliminar";
-  boton.onclick = () => eliminarFila(boton);
-  celdaBoton.appendChild(boton);
-}
+// // =====================
+// // Agrega una fila editable a una tabla de probabilidades
+// // =====================
+// function agregarFila(tablaId) {
+//   const tabla = document
+//     .getElementById(tablaId)
+//     .getElementsByTagName("tbody")[0];
+//   const fila = tabla.insertRow();
+//   for (let i = 0; i < 4; i++) {
+//     const celda = fila.insertCell();
+//     celda.contentEditable = true;
+//     celda.innerText = "";
+//   }
+//   const celdaBoton = fila.insertCell();
+//   const boton = document.createElement("button");
+//   boton.innerText = "Eliminar";
+//   boton.onclick = () => eliminarFila(boton);
+//   celdaBoton.appendChild(boton);
+// }
 
 // =====================
 // Habilita los botones para ver resultados
@@ -76,19 +76,20 @@ function generarSimulacion() {
     const rDescarga = Math.floor(Math.random() * (max - min + 1)) + min;
     const llegadas = calcularLlegadas(rLlegada);
     const totalADescargar = retrasosAnterior + llegadas;
-    const descargas = Math.min(totalADescargar, calcularDescargas(rDescarga));
 
-    // Selecciona los valores del evento y afectación (por ahora base 0)
+    //decargas sin afectacion aun
+    let descargas = Math.min(totalADescargar, calcularDescargas(rDescarga));
+
+    // Valores por defecto (se modificarán al cambiar evento después)
     let tipoEvento = "ninguno";
     let afectacion = 0;
 
-    // Aplica afectación si hay evento
+    // Aplicar afectación aquí aunque no haya aún (x eso no esta "otro"), para mantener lógica centralizada
     if (tipoEvento === "tormenta") {
       descargas = Math.floor(descargas * (1 - afectacion / 100));
     } else if (tipoEvento === "huelga") {
       descargas = 0;
     }
-
 
     // Cálculo de costos por día
     const costoRetrasoDia = retrasosAnterior * costoPorRetraso;
@@ -107,7 +108,7 @@ function generarSimulacion() {
                   <option value="otro">Otro</option>
               </select>
             </td>
-            <td><span contenteditable="true" class="afectacion-celda">0</span>%</td>
+            <td><span contenteditable="false" class="afectacion-celda">0</span>%</td>
             <td>${i}</td>
             <td>${retrasosAnterior}</td>
             <td>${rLlegada}</td>
@@ -286,10 +287,14 @@ function actualizarTablaCostosOperacion(
 // =====================
 function observarCambios() {
   const tbody = document.querySelector("#tablaSimulacion tbody");
+
+  // Refrescar celdas editables
   tbody.querySelectorAll("td[contenteditable=true]").forEach((cell) => {
     const newCell = cell.cloneNode(true);
     cell.parentNode.replaceChild(newCell, cell);
   });
+
+  // Escuchar cambios en celdas editables normales
   tbody.querySelectorAll("td[contenteditable=true]").forEach((cell) => {
     cell.addEventListener("input", recalcularYPropagar);
     cell.addEventListener("blur", recalcularYPropagar);
@@ -300,7 +305,80 @@ function observarCambios() {
       }
     });
   });
+
+  // Escuchar cambios en el select de evento
+  tbody.querySelectorAll(".evento-select").forEach(select => {
+    select.addEventListener("change", () => {
+      const row = select.closest("tr");
+      const celda = row.querySelector(".afectacion-celda");
+
+      if (!celda) return;
+
+      // Evento tormenta
+      if (select.value === "tormenta") {
+        celda.textContent = "50"; // solo el número
+        celda.contentEditable = true;
+      }
+      // Evento huelga
+      else if (select.value === "huelga") {
+        celda.textContent = "100";
+        celda.contentEditable = true;
+      }
+      // Evento otro (editable personalizado)
+      else if (select.value === "otro") {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Nombre del evento";
+        input.className = "form-control form-control-sm mt-1 nombre-evento-input";
+        select.style.display = "none";
+        select.parentNode.appendChild(input);
+        input.focus();
+
+        input.addEventListener("blur", () => {
+          const nuevoNombre = input.value.trim();
+          if (nuevoNombre) {
+            const option = new Option(nuevoNombre, nuevoNombre, true, true); // text, value, selected, defaultSelected
+            select.appendChild(option);
+            select.value = nuevoNombre; //Establece como seleccionada esa nueva opción personalizada.
+          } else {
+            select.value = "ninguno";
+          }
+          select.style.display = "inline-block"; //hacemo q vuelva a aparecer el select, ya q lo ocultamos con none
+          input.remove(); //ya no se necesita, se borra
+          celda.textContent = ""; //limpiamos
+          celda.contentEditable = true; //lo volvemos editable
+          recalcularYPropagar();
+        });
+
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            input.blur(); //dimos enter y ya esta listo, se calcula
+          }
+        });
+      }
+      // Evento ninguno
+      else {
+        celda.textContent = "0";
+        celda.contentEditable = false;
+      }
+
+      recalcularYPropagar();
+    });
+  });
+
+  // Escuchar cambios manuales en el % afectación
+  tbody.querySelectorAll(".afectacion-celda").forEach(span => {
+    span.addEventListener("input", () => {
+      const valor = parseInt(span.textContent.trim());
+      if (isNaN(valor) || valor < 0 || valor > 100) {
+        span.textContent = "0";
+      }
+      recalcularYPropagar();
+    });
+  });
 }
+
 
 // =====================
 // Recalcula totales y costos si se editan celdas manualmente
@@ -325,16 +403,32 @@ function recalcularYPropagar() {
   for (let i = 0; i < tbody.rows.length; i++) {
     const row = tbody.rows[i];
     const prev = retrasosAnterior;
-    const lleg = parseInt(row.cells[3].innerText) || 0;
-    const rDesc = parseInt(row.cells[5].innerText) || 0;
+    const lleg = parseInt(row.cells[5].innerText) || 0;
+    const rDesc = parseInt(row.cells[7].innerText) || 0;
 
-    row.cells[1].textContent = prev;
+    row.cells[3].textContent = prev;
 
     const total = prev + lleg;
-    row.cells[4].textContent = total;
+    row.cells[6].textContent = total;
 
-    const descargas = total > 0 ? Math.min(total, calcularDescargas(rDesc)) : 0;
-    row.cells[6].textContent = descargas;
+    // Leer tipo de evento y afectación
+    const tipoEvento = row.querySelector(".evento-select")?.value || "ninguno";
+    const afectacionRaw = row.querySelector(".afectacion-celda")?.textContent || "0";
+    const afectacion = parseFloat(afectacionRaw.replace("%", "").trim()) || 0;
+
+    // Calcular descargas base
+    let descargas = total > 0 ? Math.min(total, calcularDescargas(rDesc)) : 0;
+
+    // Aplicar efecto del evento
+    if (tipoEvento === "huelga") {
+      descargas = 0;
+    } else if (tipoEvento !== "ninguno") {
+      descargas = Math.floor(descargas * (1 - afectacion / 100));
+    }
+
+
+
+    row.cells[8].textContent = descargas;
 
     retrasosAnterior = total - descargas;
 
@@ -343,9 +437,9 @@ function recalcularYPropagar() {
     const costoEstadiaDia = total * costoPorEstadia;
     const costoPerdidaDia = prev > 0 ? prev * costoPorPerdida : 0;
 
-    row.cells[7].textContent = costoRetrasoDia.toLocaleString();
-    row.cells[8].textContent = costoEstadiaDia.toLocaleString();
-    row.cells[9].textContent = costoPerdidaDia.toLocaleString();
+    row.cells[9].textContent = costoRetrasoDia.toLocaleString();
+    row.cells[10].textContent = costoEstadiaDia.toLocaleString();
+    row.cells[11].textContent = costoPerdidaDia.toLocaleString();
 
     totalRetrasos += prev;
     totalLlegadas += lleg;
@@ -359,7 +453,7 @@ function recalcularYPropagar() {
     resultadosDiarios.push({
       dia: i + 1,
       retrasosDiaAnterior: prev,
-      numeroAleatorioLlegadas: parseInt(row.cells[2].innerText) || 0,
+      numeroAleatorioLlegadas: parseInt(row.cells[4].innerText) || 0,
       llegadasNocturnas: lleg,
       totalADescargar: total,
       numeroAleatorioDescargas: rDesc,
@@ -459,8 +553,8 @@ function calcularCostosSimulacion() {
 
   for (let i = 0; i < tbody.rows.length; i++) {
     const row = tbody.rows[i];
-    const retrasos = parseInt(row.cells[1].innerText) || 0;
-    const totalADescargar = parseInt(row.cells[4].innerText) || 0;
+    const retrasos = parseInt(row.cells[3].innerText) || 0;
+    const totalADescargar = parseInt(row.cells[6].innerText) || 0;
 
     costoRetraso += retrasos * costoPorRetraso;
     costoEstadia += totalADescargar * costoPorEstadia;
