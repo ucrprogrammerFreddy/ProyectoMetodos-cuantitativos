@@ -1,122 +1,452 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Resultados de la Simulación de Barcazas</title>
-    <link rel="stylesheet" href="../css/resultados.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script defer src="../js/resultados.js"></script>
+    <title>Llegadas y descargas de Barcazas</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Bootstrap CSS v5.3.2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link href="../css/prueba.css" rel="stylesheet" />
+    <style>
+        .mt-4-5 {
+            margin-top: 2.5rem;
+        }
+
+        .d-none {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0
+            }
+
+            100% {
+                opacity: 1
+            }
+        }
+
+        .alerta-elegante {
+            display: none;
+            margin-top: 1rem;
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alerta-icono {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .titulo {
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container-fluid {
+                max-width: 98vw;
+            }
+
+            .card-body {
+                padding-left: 1.2rem;
+                padding-right: 1.2rem;
+            }
+        }
+    </style>
 </head>
 
-<body>
-    <!-- Sección inicial de introducción -->
-    <div class="overlay intro">
-        <h1>Resultados de la Simulación de Barcazas</h1>
-
-        <section id="costos" class="mb-4">
-            <div class="card-costos">
-                <h2 class="titulo-seccion"><span class="icono-costos">&#128176;</span> Costos Asociados</h2>
-                <ul class="lista-costos">
-                    <li><span class="icono-item">&#9201;</span> Costo por barcaza retrasada por día: <span
-                            id="costoRetrasos"></span> USD
-                    </li>
-                    <li><span class="icono-item">&#9889;</span> Costo total estimado por retrasos: <span
-                            id="costoTotal"></span> USD
-                    </li>
-                    <li><span class="icono-item">&#128230;</span> Costo por operación de descarga: <span
-                            id="costoOperacion"></span> USD
-                    </li>
-                    <li><span class="icono-item">&#128640;</span> Costo total de operaciones de descarga: <span
-                            id="costoTotalOperacion"></span>
-                        USD</li>
-                    <li><span class="icono-item">&#128736;</span> Costo fijo diario (personal, energía, etc): <span
-                            id="costoFijo"></span> USD
-                    </li>
-                    <li><span class="icono-item">&#128178;</span> Costo fijo total: <span id="costoFijoTotal"></span>
-                        USD</li>
-                </ul>
-                <div class="costo-global">
-                    <strong><span class="icono-item">&#11088;</span> Costo global estimado: <span
-                            id="costoGlobal"></span> USD</strong>
+<body class="fondo">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Título de la página -->
+                <div class="text-center mb-4">
+                    <h1 class="titulo">Simulación de llegadas y descargas de Barcazas</h1>
                 </div>
-            </div>
-        </section>
+                <!-- SECCIÓN DE PARÁMETROS INICIALES -->
+                <section class="mb-4">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h2 class="titulo h4 mb-3">Rango para números aleatorios</h2>
+                            <form class="row g-3 align-items-end">
+                                <div class="col-12 col-md-3">
+                                    <label for="rangoMin" class="form-label">Mín:</label>
+                                    <input type="number" class="form-control" id="rangoMin" value="1">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="rangoMax" class="form-label">Máx:</label>
+                                    <input type="number" class="form-control" id="rangoMax" value="100">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="dias" class="form-label">Cantidad de días:</label>
+                                    <input type="number" class="form-control" id="dias" value="15">
+                                </div>
+                                <div class="col-12 col-md-3 d-grid">
+                                    <button type="button" class="btn btn-primary" id="btnGenerar">
+                                        Generar simulación
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
 
-        <section id="resultadosPromedio" class="mb-4">
-            <div class="card-promedio">
-                <h2 class="titulo-seccion"><span class="icono-prom">&#128202;</span> Resultados Promedio</h2>
-                <ul class="lista-promedio">
-                    <li><span class="icono-item">&#9201;</span> Promedio de barcazas retrasadas por día: <span
-                            id="promedioRetrasos"></span>
-                    </li>
-                    <li><span class="icono-item">&#128347;</span> Promedio de llegadas nocturnas: <span
-                            id="promedioLlegadas"></span>
-                    </li>
-                    <li><span class="icono-item">&#128230;</span> Promedio de barcazas descargadas por día: <span
-                            id="promedioDescargas"></span>
-                    </li>
-                </ul>
-            </div>
-        </section>
+                <!-- SECCIÓN DE TABLA DE SIMULACIÓN -->
+                <section class="mb-4">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h2 class="titulo h4 mb-3">Tabla de simulación</h2>
+                            <div class="table-responsive">
+                                <table id="tablaSimulacion"
+                                    class="table table-bordered table-striped mx-auto mb-0 align-middle">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Día</th>
+                                            <th>Retrasos del día anterior</th>
+                                            <th>Número aleatorio llegadas</th>
+                                            <th>Llegadas nocturnas</th>
+                                            <th>Total a descargar</th>
+                                            <th>Número aleatorio descargas</th>
+                                            <th>Número de descargas</th>
+                                            <th>Costo retraso</th>
+                                            <th>Costo estadía</th>
+                                            <th>Costo perdida</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot class="fondoTablas table-light">
+                                        <tr>
+                                            <td><strong>Totales</strong></td>
+                                            <td id="totalRetrasos"></td>
+                                            <td></td>
+                                            <td id="totalLlegadas"></td>
+                                            <td id="totalADescargar"></td>
+                                            <td></td>
+                                            <td id="totalDescargas"></td>
+                                            <td id="totalCostoRetraso"></td>
+                                            <td id="totalCostoEstadia"></td>
+                                            <td id="totalCostoPerdida"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <!-- TABLA DE COSTOS DE OPERACIÓN alineada a la derecha -->
+                            <div class="row justify-content-center mt-4">
+                                <div class="col-auto">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <h5 class="mb-0 fw-bold">Costos de operación</h5>
+                                        <table class="table table-bordered table-hover mt-0 mb-0 w-auto"
+                                            style="min-width: 300px;">
+                                            <thead class="table-secondary">
+                                                <tr>
+                                                    <th colspan="2" class="text-center">Costos de operación</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Concepto</th>
+                                                    <th>Costo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Costo por barcaza retrasada</td>
+                                                    <td id="costoRetraso">$0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Costo por estadía</td>
+                                                    <td id="costoEstadia">$0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Costo por barcaza perdida</td>
+                                                    <td id="costoPerdida">$0</td>
+                                                </tr>
+                                                <tr style="font-weight:bold; background:#e3eafc;">
+                                                    <td>Total</td>
+                                                    <td id="costoTotalOperacion" style="font-weight:bold">$0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- FIN TABLA COSTOS -->
+                        </div>
+                    </div>
+                </section>
 
-        <div class="text-center">
-            <a href="#graficos" class="btn btn-primary">Ver gráficos</a>
+                <!-- BOTÓN PARA MOSTRAR/OCULTAR TABLAS DE LLEGADAS Y DESCARGAS -->
+                <div class="d-flex justify-content-center gap-2 mb-4">
+                    <button id="btnToggleTablas" class="btn btn-secondary">
+                        Mostrar Tablas de Tasa de Llegadas y Descargas
+                    </button>
+                </div>
+
+                <!-- TABLAS OCULTAS INICIALMENTE (PROBABILIDADES DE LLEGADAS Y DESCARGAS) -->
+                <div id="tablasProbabilidades" class="d-none fade-in">
+                    <!-- Tabla de tasas de llegadas -->
+                    <section class="mb-4">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h2 class="titulo h4 mb-3">Tabla Tasa de Llegadas</h2>
+                                <div class="table-responsive">
+                                    <table id="tablaLlegadas"
+                                        class="table table-bordered table-striped mx-auto mb-0 align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th># Llegadas</th>
+                                                <th>Probabilidad</th>
+                                                <th>Probabilidad Acumulada</th>
+                                                <th>Intervalo Aleatorio</th>
+                                                <th>Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody contenteditable="true">
+                                            <tr>
+                                                <td>0</td>
+                                                <td>0.13</td>
+                                                <td>0.13</td>
+                                                <td>01 al 13</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>0.17</td>
+                                                <td>0.3</td>
+                                                <td>14 al 30</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>0.15</td>
+                                                <td>0.45</td>
+                                                <td>31 al 45</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>0.25</td>
+                                                <td>0.7</td>
+                                                <td>46 al 70</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>0.2</td>
+                                                <td>0.9</td>
+                                                <td>71 al 90</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>0.1</td>
+                                                <td>1</td>
+                                                <td>91 al 00</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-2">
+                                    <button onclick="agregarFila('tablaLlegadas')"
+                                        class="btn btn-outline-primary btn-sm">Agregar Fila</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Tabla de tasas de descargas -->
+                    <section class="mb-4">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h2 class="titulo h4 mb-3">Tabla Tasa de Descargas</h2>
+                                <div class="table-responsive">
+                                    <table id="tablaDescargas"
+                                        class="table table-bordered table-striped mx-auto mb-0 align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th># Descargas</th>
+                                                <th>Probabilidad</th>
+                                                <th>Probabilidad Acumulada</th>
+                                                <th>Intervalo Aleatorio</th>
+                                                <th>Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody contenteditable="true">
+                                            <tr>
+                                                <td>1</td>
+                                                <td>0.05</td>
+                                                <td>0.05</td>
+                                                <td>01 al 05</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>0.15</td>
+                                                <td>0.2</td>
+                                                <td>06 al 20</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>0.5</td>
+                                                <td>0.7</td>
+                                                <td>21 al 70</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>0.2</td>
+                                                <td>0.9</td>
+                                                <td>71 al 90</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>0.1</td>
+                                                <td>1</td>
+                                                <td>91 al 00</td>
+                                                <td><button onclick="eliminarFila(this)"
+                                                        class="btn btn-danger btn-sm">Eliminar</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-2">
+                                    <button onclick="agregarFila('tablaDescargas')"
+                                        class="btn btn-outline-primary btn-sm">Agregar fila</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Botones de resultados -->
+                <div class="d-flex justify-content-center gap-2 my-4">
+                    <button type="button" class="btn"
+                        style="background-color:#06444d; color:white; border:none; border-radius: 25px; padding: 6px 12px; cursor: pointer;"
+                        id="btnModalResultados">
+                        Resultados Promedio
+                    </button>
+                    <button id="btnVerResultados" class="btn"
+                        style="background-color:#06444d; color:white; border:none; border-radius: 25px; padding: 6px 12px; cursor: pointer;">
+                        Ver Resultados
+                    </button>
+                </div>
+
+                <!-- Mensaje de advertencia si no hay simulación -->
+                <div id="mensajeAdvertencia" class="alerta-elegante">
+                    <span class="alerta-icono">&#9888;</span>
+                    <span class="alerta-texto">
+                        Por favor, genere primero la simulación para poder ver los resultados.
+                    </span>
+                </div>
+
+                <!-- Modal de resultados promedio -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content custom-modal">
+                            <div class="modal-header custom-modal__header">
+                                <h5 class="custom-modal__title titulo2" id="staticBackdropLabel">Resultados promedio
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body custom-modal__body estiloModal">
+                                <p class="markModel">Promedio de barcazas retrasadas por día: <span
+                                        id="promedioRetrasos"></span></p>
+                                <p class="markModel">Promedio de llegadas nocturnas: <span id="promedioLlegadas"></span>
+                                </p>
+                                <p class="markModel">Promedio de barcazas descargadas por día: <span
+                                        id="promedioDescargas"></span></p>
+                                <hr>
+                                <h5>Costos de operación</h5>
+                                <table class="table table-bordered table-hover w-auto mx-auto mb-0">
+                                    <thead class="table-secondary">
+                                        <tr>
+                                            <th colspan="2" class="text-center">Costos de operación</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Concepto</th>
+                                            <th>Costo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Costo por barcaza retrasada</td>
+                                            <td id="costoRetrasoModal">$0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Costo por estadía</td>
+                                            <td id="costoEstadiaModal">$0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Costo por barcaza perdida</td>
+                                            <td id="costoPerdidaModal">$0</td>
+                                        </tr>
+                                        <tr style="font-weight:bold; background:#e3eafc;">
+                                            <td>Total</td>
+                                            <td id="costoTotalOperacionModal" style="font-weight:bold">$0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer custom-modal__footer">
+                                <button type="button" class="btn bordeB" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End modal -->
+            </div>
         </div>
     </div>
+    <!-- Scripts -->
+    <script src="../js/prueba.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <script>
+        // Script para mostrar/ocultar las tablas de probabilidades de llegadas y descargas
+        const btnToggleTablas = document.getElementById('btnToggleTablas');
+        const tablasProbabilidades = document.getElementById('tablasProbabilidades');
+        let tablasVisibles = false;
 
-    <!-- Sección de gráficos ocultos al inicio -->
-    <main id="graficos" class="graficos-section">
-        <section class="chart-container">
-            <h2>Promedios Diarios</h2>
-            <canvas id="promediosBarChart"></canvas>
-        </section>
-
-        <section class="chart-container">
-            <h2>Distribución de Llegadas Nocturnas</h2>
-            <canvas id="llegadasPieChart"></canvas>
-        </section>
-
-        <section class="chart-container">
-            <h2>Retrasos Diarios</h2>
-            <canvas id="retrasosLineChart"></canvas>
-        </section>
-
-        <section class="chart-container">
-            <h2>Descargas Diarias</h2>
-            <canvas id="descargasColumnChart"></canvas>
-        </section>
-
-        <section class="chart-container">
-            <!-- Compara llegadas, descargas, retrasos y costos entre dos periodos de la simulación -->
-            <h2>Comparación por Periodos</h2>
-            <canvas id="comparacionPeriodosChart"></canvas>
-            <div id="infoPeriodos" style="margin-top: 1em; color:#212529;">
-                <!-- Aquí se mostrarán los rangos de días de cada periodo -->
-            </div>
-        </section>
-
-        <section class="chart-container">
-            <!-- Muestra la utilización diaria del servidor respecto a su capacidad máxima -->
-            <h2>Utilización del Servidor Diaria</h2>
-            <canvas id="utilizacionServidorChart"></canvas>
-        </section>
-
-        <section class="chart-container">
-            <!-- Muestra el tiempo promedio en cola y en el sistema para cada día -->
-            <h2>Tiempos Promedio en Cola y en el Sistema</h2>
-            <canvas id="tiemposPromedioChart"></canvas>
-        </section>
-
-        <div class="text-center d-flex justify-content-center gap-3 mt-4">
-            <a href="../html/prueba.html" class="btn btn-simulacion">
-                <i class="fas fa-arrow-left me-2"></i> Regresar a Simulación
-            </a>
-            <a href="../html/dashboard.html" class="btn btn-dashboard" target="_blank">
-                <i class="fas fa-chart-pie me-2"></i> Ver Dashboard
-            </a>
-        </div>
-    </main>
+        btnToggleTablas.addEventListener('click', () => {
+            tablasVisibles = !tablasVisibles;
+            if (tablasVisibles) {
+                tablasProbabilidades.classList.remove('d-none');
+                tablasProbabilidades.classList.add('fade-in');
+                btnToggleTablas.textContent = 'Ocultar Tablas de Tasa de Llegadas y Descargas';
+            } else {
+                tablasProbabilidades.classList.add('d-none');
+                tablasProbabilidades.classList.remove('fade-in');
+                btnToggleTablas.textContent = 'Mostrar Tablas de Tasa de Llegadas y Descargas';
+            }
+        });
+    </script>
 </body>
 
 </html>
